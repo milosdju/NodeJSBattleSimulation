@@ -1,32 +1,7 @@
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    path = require('path'),
-    Battle = require('./model/battle');
+var Battle = require('./model/battle'),
+    Soldier = require('./model/soldier');
 
-var app = express();
-app.set('port', process.env.PORT || 3000);
+console.log("cao");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.post("/battle", function(req, res) {
-    /*
-     * Init battle
-     */
-    battle = new Battle();
-
-    /*
-     * Configurate battle
-     */
-    var excludes = req.body.exclude;
-    var maxValues = req.body.max;
-    var minValues = req.body.min;
-    battle.battleConfig.config(excludes, maxValues, minValues);
-    
-    res.send(battle.battleConfig.default_strategies);
-});
-
-
-var server = app.listen(app.get('port'), function() {
-    console.log("Server is listening on port " + server.address().port);
-});
+s1 = new Soldier(null, 25, 0);
+console.log("ATTACK: " + s1.calculateAttackSuccessProbability());
