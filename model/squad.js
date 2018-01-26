@@ -1,12 +1,14 @@
 var Unit = require('./unit'),
     Soldier = require('./soldier'),
-    Vehicle = require('./vehicle');
+    Vehicle = require('./vehicle'),
+    Utils = require('../utils/utils');
 
 /**
  * Squad constructor
  */
-function Squad() {
+function Squad(strategy) {
     this.units = [];
+    this.strategy = strategy;
 };
 
 /**
@@ -37,6 +39,17 @@ Squad.prototype.removeUnit = function(unit) {
         this.units.splice(index, 1);
     } 
 };
+
+Squad.prototype.getSquadRechargeTime = function() {
+    var maxRechargeTime = this.units[0].recharge;
+    this.units.forEach(function(unit){
+        if (unit.recharge > maxRechargeTime) {
+            maxRechargeTime = unit.recharge;
+        }
+    });
+
+    return maxRechargeTime;
+}
 
 /**
  * Total attack success probability (ASP) is calculated
@@ -105,9 +118,8 @@ Squad.prototype.receiveDamage = function(receivedDamage) {
  *          FALSE if secondSquad has won
  */
 var decideWinner = function(firstSquad, secondSquad) {
-    if (!(firstSquad instanceof Squad && secondSquad instanceof Squad)) {
-        throw Error("Battle can occur only between Squads");
-    }
+    Utils.checkClass(firstSquad, Squad, "Battle can occur only between Squads");
+    Utils.checkClass(secondSquad, Squad, "Battle can occur only between Squads");
 
     var firstSquadChanceToWin = firstSquad.calculateAttackSuccessProbability();
     var secondSquadChanceToWin = secondSquad.calculateAttackSuccessProbability();
@@ -124,18 +136,62 @@ var decideWinner = function(firstSquad, secondSquad) {
  * Perform attack on another squad
  * 
  * @param {Squad} anotherSquad 
+ * 
+ * @returns TRUE  if firstSquad has won
+ *          FALSE if secondSquad has wo
  */
 Squad.prototype.attack = function(anotherSquad) {
-    if (!(anotherSquad instanceof Squad)) {
-        throw Error("Squad can attack only another Squad");
-    }
+    Utils.checkClass(anotherSquad, Squad, "Squad can attack only another Squad");
 
     // DECIDE WINNER
     var won = decideWinner(this, anotherSquad);
 
-    // REDISTRIBUTE DAMAGE
-    if (won) {
-        anotherSquad.receiveDamage(this.calculateInflictedDamage);
+    return won;
+};
+
+/**
+ * 
+ * @param {*} attackOrder 
+ * 
+ * @returns Target squad which is choosen following squads strategy
+ */
+Squad.prototype.chooseTarget = function(attackOrder) {
+    var enemies = []
+    
+    var strongest = null;
+    var strongestAttackProbability = 0;
+
+    var weakest = null;
+    var weakestAttackProbability = 1;
+
+    attackOrder.forEach(function(potentialTarget){
+        if (potentialTarget.army !== attackOrder[0].army) {
+            enemies.push(potentialTarget);
+            // Choose strongest
+            if (potentialTarget.attackProbability > strongestAttackProbability) {
+                strongest = potentialTarget;
+                strongestAttackProbability = potentialTarget.attackProbability;
+            } 
+
+            // Choose weakest
+            if (potentialTarget.attackProbability < weakestAttackProbability) {
+                weakest = potentialTarget;
+                weakestAttackProbability = potentialTarget.attackProbability;
+            }
+        }
+    });
+
+    /** GREEEEEEEEEEEEEEEESKAAAAAAA - proveri sta vracas */
+
+    if (strategy === 'random') {
+        index = Utils.randomFromRange(0, enemies.length - 1);
+        return enemies[index];
+    } else if (strategy === 'strongest') {
+        return strongest;
+    } else if (strategy === 'weakest') {
+        return weakest;
+    } else {
+        throw Error("Strategy not known: " + strategy);
     }
 };
 

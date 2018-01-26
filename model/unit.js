@@ -5,7 +5,7 @@ const defaultHealthValue = 100;
  */
 function Unit(health, recharge) {
     // Validate health type and value
-    if ((health !== null && typeof(health) !== 'number') || health < 1 || health > 100) {
+    if (health !== null && (typeof(health) !== 'number' || health < 1 || health > 100)) {
         throw Error("Health must be in range [1..100]")
     }
     this.health = health === null ? defaultHealthValue : health;

@@ -1,7 +1,9 @@
 var Unit = require('./unit'),
+    BattleConfig = require('../config/battle-config').BattleConfig,
+    BattleConfigProperty = require('../config/battle-config').BattleConfigProperty,
     Utils = require('../utils/utils');
 
-const defaultExperienceValue = 0;
+//const defaultExperienceValue = BattleConfig.get();
 
 /**
  * Constructor
@@ -12,12 +14,19 @@ function Soldier(health, recharge, experience) {
         throw Error("Recharge for soldier must be in range [100..2000]");
     }
     Unit.call(this, health, recharge);
+
     // Validate experience type and value
-    if (typeof(recharge) !== 'number' || recharge < 50 || recharge > 100) {
-        throw Error("Experience must be in range [50..100]");
+    if (experience !== null && (typeof(experience) !== 'number' || experience < 0 || experience > 50)) {
+        throw Error("Experience must be in range [0..50]");
     }
     this.experience = experience === null ? defaultExperienceValue : experience;
 }
+
+/**
+ * Inherit Unit and set Constructor
+ */
+Soldier.prototype = Object.create(Unit.prototype);
+Soldier.prototype.constructor = Soldier;
 
 /**
  * 

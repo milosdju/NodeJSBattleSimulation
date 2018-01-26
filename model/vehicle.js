@@ -16,14 +16,18 @@ function Vehicle(health, recharge) {
 }
 
 /**
+ * Inherit Unit and set Constructor
+ */
+Vehicle.prototype = Object.create(Unit.prototype);
+Vehicle.prototype.constructor = Vehicle;
+
+/**
  * Add soldier to vehicle
  * 
  * @param {Soldier} soldier 
  */
 Vehicle.prototype.addOperator = function(soldier) {
-    if (!(soldier instanceof Soldier)) {
-        throw Error("Only Soldier can be operator");
-    }
+    Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
     // Check unit number constraint
     if (this.operators.length === 3) {
         throw Error("Maximum number of operators per vehicle (3) is reached");
@@ -37,9 +41,7 @@ Vehicle.prototype.addOperator = function(soldier) {
  * @param {Soldier} soldier 
  */
 Vehicle.prototype.removeOperator = function(soldier) {
-    if (!(soldier instanceof Unit)) {
-        throw Error("Only Soldier can be operator");
-    }
+    Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
 
     var index = this.operators.indexOf(soldier);
     if (index !== -1) {

@@ -1,7 +1,7 @@
 var path = require('path'),
     propertiesReader = require('properties-reader');
 
-/*
+/**
  * Default Battle configuration file
  */
 const configFile = "battle-config.properties";
@@ -10,11 +10,32 @@ const configFile = "battle-config.properties";
  * Enums for configuration properties
  */
 var BattleConfigProperty = {
-    DEFAULT_STRATEGIES : "strategies",
-    ARMY_MIN: "min_armies",
-    SQUADS_MIN: "min_squads_per_army",
-    UNITS_MIN: "min_units_per_squad",
-    UNITS_MAX: "max_units_per_squad"
+    // Battle config properties
+    DEFAULT_STRATEGIES: "strategies",
+    MIN_ARMIES: "min_armies",
+    MIN_SQUADS: "min_squads_per_army",
+    MIN_UNITS: "min_units_per_squad",
+    MAX_UNITS: "max_units_per_squad",
+
+    // Unit config properties
+    DEFAULT_HEALTH: "default_health",
+    MIN_HEALTH: "min_health",
+    MAX_HEALTH: "max_health",
+
+    DEFAULT_RECHARGE: "default_recharge",
+    MIN_SOLDIER_RECHARGE: "min_soldier_recharge",
+    MAX_SOLDIER_RECHARGE: "max_soldier_recharge",
+    MIN_VEHICLE_RECHARGE: "min_vehicle_recharge",
+    MIN_VEHICLE_RECHARGE: "max_vehicle_recharge",
+
+    DEFAULT_EXPERIENCE: "default_experience",
+    MIN_EXPERIENCE: "min_experience",
+    MAX_EXPERIENCE: "max_experience",
+
+    DEFAULT_NUM_OF_OPERATORS: "default_num_of_operators",
+    MIN_NUM_OF_OPERATORS: "min_num_of_operators",
+    MAX_NUM_OF_OPERATORS: "max_num_of_operators"
+
 };
 Object.freeze(BattleConfigProperty);
 
@@ -23,72 +44,10 @@ Object.freeze(BattleConfigProperty);
  */
 function BattleConfig() {
     this.defaultBattleConfigs = propertiesReader(path.join(__dirname, configFile));
-    /**
-     * Set default configuration
-     */
-    this.resetConfiguration();
-}
-
-BattleConfig.prototype.config = function(excludes, maxValues, minValues) {
-    /**
-     * Exclude some of default strategies
-     */
-    if (excludes != null) {
-        excludeStrategy(excludes.strategies, this.default_strategies);
-    }
-
-    /**
-     * Set max number constraints
-     */
-    if (maxValues != null) {
-        setConstraint(maxValues.armies, this.max_armies);
-        setConstraint(maxValues.squads_per_army, this.max_squads);
-        setConstraint(maxValues.armies, this.max_armies);
-    }
-
-    /**
-     * Set min number constraints
-     */
-    if (minValues != null) {
-        setConstraint(minValues.armies, this.min_armies);
-        setConstraint(minValues.squads_per_army, this.min_squads);
-        setConstraint(minValues.armies, this.min_armies);
-    }
-
-    /**
-     * Check configuration validity
-     */
+    
+    // Validate configuration
     this.validateConfiguration();
 };
-
-var excludeStrategy = function(strategies, defaultStrategies) {
-    if (strategies == null || !Array.isArray(strategies)) {
-        throw Error("Strategies field need to be an array");
-    }
-
-    strategies.forEach(function(strategy){
-        /**
-         * Check is strategy one of default strategies
-         */
-        index = defaultStrategies.indexOf(strategy);
-        if (index === -1) {
-            throw Error("Strategy " + strategy + " is not default strategy");
-        }
-
-        /**
-         * If so, remove it from default list
-         */
-        defaultStrategies.splice(index, 1);
-    });
-};
-
-BattleConfig.prototype.resetConfiguration = function() {
-    this.min_armies = this.getMaxMinConstraint(BattleConfigProperty.ARMY_MIN);
-    this.min_squads = this.getMaxMinConstraint(BattleConfigProperty.SQUADS_MIN);
-    this.min_units = this.getMaxMinConstraint(BattleConfigProperty.UNITS_MIN);
-    this.max_units = this.getMaxMinConstraint(BattleConfigProperty.UNITS_MAX);
-    this.default_strategies = this.getDefaultStrategies();
-}
 
 BattleConfig.prototype.validateConfiguration = function() {
     var valid = true;
@@ -96,7 +55,9 @@ BattleConfig.prototype.validateConfiguration = function() {
     /**
      * max_armies >= min_armies
      */
-    if (this.max_armies != null && this.min_armies > this.max_armies) {
+    min_armies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
+    max_armies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
+    if (max_armies != null && min_armies > max_armies) {
         valid = false;
         message = "Max number of armies must be >= min number of armies";
     }
@@ -104,7 +65,9 @@ BattleConfig.prototype.validateConfiguration = function() {
     /**
      * max_squads >= min_squads
      */
-    if (this.max_squads != null && this.min_squads > this.max_squads) {
+    min_squads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
+    max_squads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
+    if (max_squads != null && min_squads > max_squads) {
         valid = false;
         message = "Max number of squads must be >= min number of squads";
     }
@@ -112,7 +75,9 @@ BattleConfig.prototype.validateConfiguration = function() {
     /**
      * max_units >= min_units
      */
-    if (this.min_units > this.max_units) {
+    min_units = this.get(this.defaultBattleConfigs.MIN_UNITS);
+    max_units = this.get(this.defaultBattleConfigs.MAX_UNITS);
+    if (min_units > max_units) {
         valid = false;
         message = "Max number of units must be >= min number of units";
     }
@@ -121,31 +86,22 @@ BattleConfig.prototype.validateConfiguration = function() {
         this.resetConfiguration(this.defaultBattleConfig);
         throw Error(message);
     }
-}
-
-/**
- * Getters & Setters
- */
-BattleConfig.prototype.getDefaultStrategies = function() {
-    var defaultStrategies = this.defaultBattleConfigs.get(BattleConfigProperty.DEFAULT_STRATEGIES);
-    return defaultStrategies.split('|');
 };
 
-BattleConfig.prototype.getMaxMinConstraint = function(battleConfigProperty) {
-    var maxminConstraint = this.defaultBattleConfigs.get(battleConfigProperty);
-    if (typeof(maxminConstraint) !== 'number') {
-        throw Error(battleConfigProperty + " must be number");
-    }
-    return maxminConstraint;
-}
-
-var setConstraint = function(newValue, field) {
-    if (newValue != null) {
-        field = newValue;
-    }
+/**
+ * Getter
+ * 
+ * @returns property value
+ * 
+ */
+BattleConfig.prototype.get = function(battleConfigProperty) {
+    return this.defaultBattleConfigs.get(battleConfigProperty);
 };
 
 /**
  * Export BattleConfig
  */
-module.exports = BattleConfig;
+module.exports = {
+    BattleConfig: BattleConfig,
+    BattleConfigProperty : BattleConfigProperty
+}
