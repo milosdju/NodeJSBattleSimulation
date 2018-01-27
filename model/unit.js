@@ -18,14 +18,18 @@ function Unit(health, recharge) {
 }
 
 /**
-  * Geometry avg = nth root of all units multiplied, 
-  * where n is # of units
-  * 
-  * arr = [1, 2, 3]
-  * ga = nth root of ( 1*2*3 ) ~ 1.82 
-  */ 
-Unit.prototype.geometricAvgOfAttackSuccessProbabilities = function(units) {
-    var totalAttackSuccessProbability = 0;
+ * STATIC method
+ * 
+ * Geometry avg = nth root of all units multiplied, 
+ * where n is # of units
+ * 
+ * arr = [1, 2, 3]
+ * ga = nth root of ( 1*2*3 ) ~ 1.82 
+ *
+ * @returns geometric average 
+ */ 
+Unit.geometricAvgOfAttackSuccessProbabilities = function(units) {
+    var totalAttackSuccessProbability = 1;
     units.forEach(function(unit){
         if (!(unit instanceof Unit)) {
             throw Error("Function accepts only units");
@@ -33,7 +37,7 @@ Unit.prototype.geometricAvgOfAttackSuccessProbabilities = function(units) {
         totalAttackSuccessProbability *= unit.calculateAttackSuccessProbability();
     });
      
-    return Math.pow(totalAttackSuccessProbability, 1 / this.units.length);
+    return Math.pow(totalAttackSuccessProbability, 1 / units.length);
 }
 
 /**

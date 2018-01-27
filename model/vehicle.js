@@ -7,7 +7,7 @@ var Unit = require('./unit'),
  */
 function Vehicle(health, recharge) {
     // Validate recharge type and value
-    if (typeof(recharge) !== 'number' || recharge < 1000 || recharge > 2000) {
+    if (typeof(recharge) !== "number" || recharge < 1000 || recharge > 2000) {
         throw Error("Recharge for vehicle must be in range [1000..2000]");
     }
     Unit.call(this, health, recharge);
@@ -48,6 +48,12 @@ Vehicle.prototype.removeOperator = function(soldier) {
         this.operators.splice(index, 1);
     } 
 };
+
+Vehicle.prototype.increaseExperience = function() {
+    this.operators.forEach(function(operator) {
+        operator.increaseExperience();
+    });
+}
 
 /**
  * 

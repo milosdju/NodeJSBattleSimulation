@@ -66,7 +66,7 @@ Squad.prototype.calculateAttackSuccessProbability = function() {
 Squad.prototype.calculateInflictedDamage = function() {
     var totalInflictedDamage = 0;
     this.units.forEach(function(unit){
-        totalInflictedDamage += unit.calculateInflictedDamage;
+        totalInflictedDamage += unit.calculateInflictedDamage();
     });
 
     return totalInflictedDamage;
@@ -83,27 +83,25 @@ Squad.prototype.calculateInflictedDamage = function() {
  *          FALSE if squad is not anymore operable (i.e. all units are dead)
  */
 Squad.prototype.receiveDamage = function(receivedDamage) {
-    if (receivedDamage !== 'number') {
+    if (typeof(receivedDamage) !== "number") {
         throw Error("Received damage must be number");
     }
 
+    var dealtDamage = receivedDamage / this.units.length;
+    console.log("UNITS: " + this.units.length);
     this.units.forEach(function(unit) {
-        alive = unit.receiveDamage(receivedDamage / this.units.length);
+        alive = unit.receiveDamage(dealtDamage);
         if (!alive) {
             this.removeUnit(unit);
         }
-    });
+    }, this);
 
     /**
      * If there is no more units left in squad,
      * alive = FALSE will be returned,
      * otherwise return TRUE
      */
-    if (units.length === 0) {
-        return false;
-    } else {
-        return true;
-    }
+    return this.units.length > 0;
 };
 
 /**
@@ -124,11 +122,9 @@ var decideWinner = function(firstSquad, secondSquad) {
     var firstSquadChanceToWin = firstSquad.calculateAttackSuccessProbability();
     var secondSquadChanceToWin = secondSquad.calculateAttackSuccessProbability();
 
-    if (firstSquadChanceToWin > secondSquadChanceToWin) {
-        return true;
-    } else {
-        return false;
-    }
+    var won = firstSquadChanceToWin > secondSquadChanceToWin;
+    
+    return won;
 };
 
 /**
@@ -146,6 +142,13 @@ Squad.prototype.attack = function(anotherSquad) {
     // DECIDE WINNER
     var won = decideWinner(this, anotherSquad);
 
+    // Increase experience of winner squad
+    if (won) {
+        this.units.forEach(function(unit){
+            unit.increaseExperience();
+        });
+    }
+
     return won;
 };
 
@@ -153,7 +156,7 @@ Squad.prototype.attack = function(anotherSquad) {
  * 
  * @param {*} attackOrder 
  * 
- * @returns Target squad which is choosen following squads strategy
+ * @returns Chosen target squad following attacking squad strategy
  */
 Squad.prototype.chooseTarget = function(attackOrder) {
     var enemies = []
@@ -181,17 +184,20 @@ Squad.prototype.chooseTarget = function(attackOrder) {
         }
     });
 
-    /** GREEEEEEEEEEEEEEEESKAAAAAAA - proveri sta vracas */
-
-    if (strategy === 'random') {
+    /**
+     * Depending on squad attacking strategy
+     * one of the chosen targets will be returned
+     */
+    if (this.strategy === 'random') {
+        console.log("ENEMIES: " + enemies.length);
         index = Utils.randomFromRange(0, enemies.length - 1);
         return enemies[index];
-    } else if (strategy === 'strongest') {
+    } else if (this.strategy === 'strongest') {
         return strongest;
-    } else if (strategy === 'weakest') {
+    } else if (this.strategy === 'weakest') {
         return weakest;
     } else {
-        throw Error("Strategy not known: " + strategy);
+        throw Error("Strategy not known: " + this.strategy);
     }
 };
 

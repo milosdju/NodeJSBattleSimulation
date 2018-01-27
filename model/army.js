@@ -4,7 +4,8 @@ var Unit = require('./unit'),
 /**
  * Army constructor
  */
-function Army() {
+function Army(name) {
+    this.name = name;
     this.squads = [];
 };
 

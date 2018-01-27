@@ -39,7 +39,7 @@ Soldier.prototype.constructor = Soldier;
  *          FALSE if soldier is dead
  */
 Soldier.prototype.receiveDamage = function(receivedDamage) {
-    if (receivedDamage !== 'number') {
+    if (typeof(receivedDamage) !== "number") {
         throw Error("Received damage must be number");
     }
 
@@ -56,7 +56,9 @@ Soldier.prototype.receiveDamage = function(receivedDamage) {
  * Increase experience by 1
  */
 Soldier.prototype.increaseExperience = function() {
-    this.experience++;
+    if (this.experience < 50) {
+        this.experience++;
+    }
 }
 
 /**

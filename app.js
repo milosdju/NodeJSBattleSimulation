@@ -17,10 +17,10 @@ v1.addOperator(s3);
 v1.addOperator(s4);
 v1.addOperator(s5);
 
-sq1 = new Squad();
+sq1 = new Squad('random');
 sq1.addUnit(s1);
 sq1.addUnit(s2);
-sq1.addUnit(v1);
+//sq1.addUnit(v1);
 
 
 /* SQUAD 2 */
@@ -30,7 +30,7 @@ s8 = new Soldier(null, 500, 20);
 s9 = new Soldier(null, 500, 20);
 s10 = new Soldier(null, 600, 50);
 
-sq2 = new Squad();
+sq2 = new Squad('random');
 sq2.addUnit(s6);
 sq2.addUnit(s7);
 sq2.addUnit(s8);
@@ -47,19 +47,22 @@ v2.addOperator(s11);
 v2.addOperator(s12);
 v2.addOperator(s13);
 
-sq3 = new Squad();
+sq3 = new Squad('random');
 sq3.addUnit(v2);
 
 /* ARMY 1 */
-a1 = new Army();
+a1 = new Army("A1");
 a1.addSquad(sq1);
+a1.addSquad(sq2);
 
 /* ARMY 2 */
-a2 = new Army();
-a2.addSquad(sq2);
+a2 = new Army("A2");
+//a2.addSquad(sq2);
 a2.addSquad(sq3);
 
 /* BATTLE */
 b1 = new Battle();
 b1.addArmy(a1);
 b1.addArmy(a2);
+
+b1.start();
