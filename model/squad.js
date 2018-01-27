@@ -1,14 +1,21 @@
 var Unit = require('./unit'),
     Soldier = require('./soldier'),
     Vehicle = require('./vehicle'),
-    Utils = require('../utils/utils');
+    Utils = require('../utils/utils'),
+    BattleConfig = require('../config/battle-config').BattleConfig,
+    BattleConfigProperty = require('../config/battle-config').BattleConfigProperty;
 
 /**
  * Squad constructor
  */
 function Squad(strategy) {
+    this.defaultConfigs = new BattleConfig();
+
+    // Initialize fields
     this.units = [];
     this.strategy = strategy;
+
+    this.attackSuccessProbability = null;
 };
 
 /**
@@ -40,6 +47,21 @@ Squad.prototype.removeUnit = function(unit) {
     } 
 };
 
+Squad.prototype.validateConditions = function() {
+    // Check unit number constraint
+    min_units = this.defaultConfigs.get(BattleConfigProperty.MIN_UNITS);
+    if (this.units.length < min_units) {
+        throw Error("Number of squads must be greater than or equal to " + min_units);
+    }
+    max_units = this.defaultConfigs.get(BattleConfigProperty.MAX_UNITS);
+    if (this.units.length > max_units) {
+        throw Error("Number of squads must be smaller than or equal to " + max_units);
+    }
+}
+
+/**
+ * @returns recharge time for squad
+ */
 Squad.prototype.getSquadRechargeTime = function() {
     var maxRechargeTime = this.units[0].recharge;
     this.units.forEach(function(unit){
@@ -58,6 +80,14 @@ Squad.prototype.getSquadRechargeTime = function() {
 Squad.prototype.calculateAttackSuccessProbability = function() {
     return Unit.geometricAvgOfAttackSuccessProbabilities(this.units);
 };
+
+/**
+ * Calculate attack success probability on this squad
+ * and assign value as 'cache' to it
+ */
+Squad.prototype.recalculateAttackSuccessProbability = function() {
+    this.attackSuccessProbability = this.calculateAttackSuccessProbability();
+}
 
 /**
  * Inflicted damage by the squad is
@@ -88,7 +118,6 @@ Squad.prototype.receiveDamage = function(receivedDamage) {
     }
 
     var dealtDamage = receivedDamage / this.units.length;
-    console.log("UNITS: " + this.units.length);
     this.units.forEach(function(unit) {
         alive = unit.receiveDamage(dealtDamage);
         if (!alive) {
@@ -154,12 +183,11 @@ Squad.prototype.attack = function(anotherSquad) {
 
 /**
  * 
- * @param {*} attackOrder 
+ * @param {List<Squad>} List of enemy squads 
  * 
  * @returns Chosen target squad following attacking squad strategy
  */
-Squad.prototype.chooseTarget = function(attackOrder) {
-    var enemies = []
+Squad.prototype.chooseTarget = function(enemies) {
     
     var strongest = null;
     var strongestAttackProbability = 0;
@@ -167,21 +195,19 @@ Squad.prototype.chooseTarget = function(attackOrder) {
     var weakest = null;
     var weakestAttackProbability = 1;
 
-    attackOrder.forEach(function(potentialTarget){
-        if (potentialTarget.army !== attackOrder[0].army) {
-            enemies.push(potentialTarget);
-            // Choose strongest
-            if (potentialTarget.attackProbability > strongestAttackProbability) {
-                strongest = potentialTarget;
-                strongestAttackProbability = potentialTarget.attackProbability;
-            } 
+    enemies.forEach(function(potentialTarget){
+        // Choose strongest
+        if (potentialTarget.attackSuccessProbability > strongestAttackProbability) {
+            strongest = potentialTarget;
+            strongestAttackProbability = potentialTarget.attackSuccessProbability;
+        } 
 
-            // Choose weakest
-            if (potentialTarget.attackProbability < weakestAttackProbability) {
-                weakest = potentialTarget;
-                weakestAttackProbability = potentialTarget.attackProbability;
-            }
+        // Choose weakest
+        if (potentialTarget.attackSuccessProbability < weakestAttackProbability) {
+            weakest = potentialTarget;
+            weakestAttackProbability = potentialTarget.attackSuccessProbability;
         }
+        
     });
 
     /**
@@ -189,7 +215,6 @@ Squad.prototype.chooseTarget = function(attackOrder) {
      * one of the chosen targets will be returned
      */
     if (this.strategy === 'random') {
-        console.log("ENEMIES: " + enemies.length);
         index = Utils.randomFromRange(0, enemies.length - 1);
         return enemies[index];
     } else if (this.strategy === 'strongest') {

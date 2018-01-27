@@ -26,7 +26,7 @@ var BattleConfigProperty = {
     MIN_SOLDIER_RECHARGE: "min_soldier_recharge",
     MAX_SOLDIER_RECHARGE: "max_soldier_recharge",
     MIN_VEHICLE_RECHARGE: "min_vehicle_recharge",
-    MIN_VEHICLE_RECHARGE: "max_vehicle_recharge",
+    MAX_VEHICLE_RECHARGE: "max_vehicle_recharge",
 
     DEFAULT_EXPERIENCE: "default_experience",
     MIN_EXPERIENCE: "min_experience",
@@ -41,6 +41,9 @@ Object.freeze(BattleConfigProperty);
 
 /**
  * BattleConfig class (prototype)
+ * 
+ * TODO: need to be singleton
+ * 
  */
 function BattleConfig() {
     this.defaultBattleConfigs = propertiesReader(path.join(__dirname, configFile));

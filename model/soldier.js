@@ -6,9 +6,16 @@ var Unit = require('./unit'),
 //const defaultExperienceValue = BattleConfig.get();
 
 /**
+ * 
  * Constructor
+ * 
+ * @param {*} health 
+ * @param {*} recharge 
+ * @param {*} experience 
  */
 function Soldier(health, recharge, experience) {
+    this.defaultConfigs = new BattleConfig();
+
     // Validate recharge value
     if (recharge < 100 || recharge > 2000) {
         throw Error("Recharge for soldier must be in range [100..2000]");
@@ -19,6 +26,7 @@ function Soldier(health, recharge, experience) {
     if (experience !== null && (typeof(experience) !== 'number' || experience < 0 || experience > 50)) {
         throw Error("Experience must be in range [0..50]");
     }
+    var defaultExperienceValue = this.defaultConfigs.get(BattleConfigProperty.DEFAULT_EXPERIENCE);
     this.experience = experience === null ? defaultExperienceValue : experience;
 }
 

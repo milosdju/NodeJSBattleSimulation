@@ -38,9 +38,9 @@ sq2.addUnit(s9);
 sq2.addUnit(s10);
 
 /* SQUAD 3 */
-s11 = new Soldier(null, 200, 50);
-s12 = new Soldier(null, 200, 50);
-s13 = new Soldier(null, 200, 50);
+s11 = new Soldier(null, 200, 20);
+s12 = new Soldier(null, 200, 20);
+s13 = new Soldier(null, 200, 20);
 
 v2 = new Vehicle(null, 1000);
 v2.addOperator(s11);
@@ -50,14 +50,27 @@ v2.addOperator(s13);
 sq3 = new Squad('random');
 sq3.addUnit(v2);
 
+/* SQUAD 4 */
+s21 = new Soldier(null, 200, null);
+s22 = new Soldier(null, 200, null);
+s23 = new Soldier(null, 200, null);
+
+v3 = new Vehicle(null, 1000);
+v3.addOperator(s21);
+v3.addOperator(s22);
+v3.addOperator(s23);
+
+sq4 = new Squad('random');
+sq4.addUnit(v3);
+
 /* ARMY 1 */
 a1 = new Army("A1");
 a1.addSquad(sq1);
-a1.addSquad(sq2);
+a1.addSquad(sq4);
 
 /* ARMY 2 */
 a2 = new Army("A2");
-//a2.addSquad(sq2);
+a2.addSquad(sq2);
 a2.addSquad(sq3);
 
 /* BATTLE */

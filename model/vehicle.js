@@ -1,17 +1,29 @@
 var Unit = require('./unit'),
     Soldier = require('./soldier'),
-    Utils = require('../utils/utils');
+    Utils = require('../utils/utils'),
+    BattleConfig = require('../config/battle-config').BattleConfig,
+    BattleConfigProperty = require('../config/battle-config').BattleConfigProperty;
 
 /**
  * Constructor
+ * 
+ * @param {*} health 
+ * @param {*} recharge 
  */
 function Vehicle(health, recharge) {
+    this.defaultConfigs = new BattleConfig();
+
     // Validate recharge type and value
-    if (typeof(recharge) !== "number" || recharge < 1000 || recharge > 2000) {
+    var min_recharge = this.defaultConfigs.get(BattleConfigProperty.MIN_VEHICLE_RECHARGE);
+    var max_recharge = this.defaultConfigs.get(BattleConfigProperty.MAX_VEHICLE_RECHARGE);
+    if (typeof(recharge) !== "number" || recharge < min_recharge || recharge > max_recharge) {
         throw Error("Recharge for vehicle must be in range [1000..2000]");
     }
+
+    // Call super constructor
     Unit.call(this, health, recharge);
     
+    // Initialize fields
     this.operators = [];
 }
 
@@ -28,7 +40,9 @@ Vehicle.prototype.constructor = Vehicle;
  */
 Vehicle.prototype.addOperator = function(soldier) {
     Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
+    
     // Check unit number constraint
+    var max_operators = this.defaultConfigs.get(BattleConfigProperty.MAX_NUM_OF_OPERATORS);
     if (this.operators.length === 3) {
         throw Error("Maximum number of operators per vehicle (3) is reached");
     }
@@ -66,7 +80,7 @@ Vehicle.prototype.increaseExperience = function() {
  *          FALSE if Vehicle is dead
  */
 Vehicle.prototype.receiveDamage = function(receivedDamage) {
-    if (receivedDamage !== 'number') {
+    if (typeof(receivedDamage) !== 'number') {
         throw Error("Received damage must be number");
     }
 
@@ -78,7 +92,7 @@ Vehicle.prototype.receiveDamage = function(receivedDamage) {
     /**
      * Random operator receive 20% of total damage
      */
-    var randomIndex = Utils.randomFromRange(1, this.operators.length);
+    var randomIndex = Utils.randomFromRange(0, this.operators.length - 1);
     var randomOperator = this.operators[randomIndex];
     var randomOperatorAlive = randomOperator.receiveDamage(receivedDamage * 0.2)
     if (!randomOperatorAlive) {
