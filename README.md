@@ -1,19 +1,19 @@
 ## Project
 ### Description
 Battle simulation with conflicting Armies. Every Army will be divided in Squads, among which fighting is taking place. 
-Every Squad is contained of two types of units:
-1. Soldier
-2. Vehicle
-These units has following characteristics:
-1. Health
-2. Recharge (time)
-3. Experience (Soldier only)
-4. Operators (Vehicle only)
-Every squad attack enemy one following next strategies:
-1. random
-2. strongest
-3. weakest
-
+Every Squad is contained of two types of units:   
+1. Soldier    
+2. Vehicle    
+These units has following characteristics:   
+1. Health    
+2. Recharge (time)   
+3. Experience (Soldier only)   
+4. Operators (Vehicle only)    
+Every squad attack enemy one following next strategies:   
+1. random    
+2. strongest   
+3. weakest   
+   
 ### How to run simulation
 In root file, `app.js`, you can find example how to: 
 1. create Units (Soldiers and Vehicles), 
