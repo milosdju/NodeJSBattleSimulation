@@ -1,9 +1,9 @@
 ## Project
 ### Bug fixes
-1. Getter for attack success probability (ASP) of squad
+1. Getter for attack success probability (ASP) of squad               
 **Impact:** Method for choosing target squad couldn't retrieve valid "strongest" and "weakest" squad
-because it couldn't calculate properly ASP
-**Fix on branch:** bug/getAttackSuccessProbability *(not yet merged)* 
+because it couldn't calculate properly ASP                        
+**Fix on branch:** bug/getAttackSuccessProbability *(not yet merged)*                 
 
 ### Description
 Battle simulation with conflicting Armies. Every Army will be divided in Squads, among which fighting is taking place. 
