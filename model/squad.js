@@ -90,6 +90,16 @@ Squad.prototype.recalculateAttackSuccessProbability = function() {
 }
 
 /**
+ * @returns cached attack success probability 
+ */
+Squad.prototype.getAttackSuccessProbability = function() {
+    if (!this.attackSuccessProbability) {
+        this.recalculateAttackSuccessProbability();
+    }
+    return this.attackSuccessProbability;
+}
+
+/**
  * Inflicted damage by the squad is
  * sum of inflicted damages made by every unit in squad
  */
@@ -197,15 +207,15 @@ Squad.prototype.chooseTarget = function(enemies) {
 
     enemies.forEach(function(potentialTarget){
         // Choose strongest
-        if (potentialTarget.attackSuccessProbability > strongestAttackProbability) {
+        if (potentialTarget.getAttackSuccessProbability() > strongestAttackProbability) {
             strongest = potentialTarget;
-            strongestAttackProbability = potentialTarget.attackSuccessProbability;
+            strongestAttackProbability = potentialTarget.getAttackSuccessProbability();
         } 
 
         // Choose weakest
-        if (potentialTarget.attackSuccessProbability < weakestAttackProbability) {
+        if (potentialTarget.getAttackSuccessProbability() < weakestAttackProbability) {
             weakest = potentialTarget;
-            weakestAttackProbability = potentialTarget.attackSuccessProbability;
+            weakestAttackProbability = potentialTarget.getAttackSuccessProbability();
         }
         
     });
