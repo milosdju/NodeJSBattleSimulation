@@ -17,7 +17,7 @@ v1.addOperator(s3);
 v1.addOperator(s4);
 v1.addOperator(s5);
 
-sq1 = new Squad('random');
+sq1 = new Squad('strongest');
 sq1.addUnit(s1);
 sq1.addUnit(s2);
 //sq1.addUnit(v1);
