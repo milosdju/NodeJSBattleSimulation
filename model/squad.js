@@ -192,18 +192,12 @@ Squad.prototype.attack = function(anotherSquad) {
 };
 
 /**
- * 
- * @param {List<Squad>} List of enemy squads 
- * 
- * @returns Chosen target squad following attacking squad strategy
+ * @param {Squads} enemies
+ * @returns strongest squad from enemy list
  */
-Squad.prototype.chooseTarget = function(enemies) {
-    
+var chooseStrongestSquad = function(enemies) {
     var strongest = null;
     var strongestAttackProbability = 0;
-
-    var weakest = null;
-    var weakestAttackProbability = 1;
 
     enemies.forEach(function(potentialTarget){
         // Choose strongest
@@ -211,26 +205,52 @@ Squad.prototype.chooseTarget = function(enemies) {
             strongest = potentialTarget;
             strongestAttackProbability = potentialTarget.getAttackSuccessProbability();
         } 
+    });
 
+    return strongest;
+};
+
+/**
+ * @param {Squads} enemies
+ * @returns weakest squad from enemy list
+ */
+var chooseWeakestSquad = function(enemies) {
+    var weakest = null;
+    var weakestAttackProbability = 1;
+
+    enemies.forEach(function(potentialTarget){
         // Choose weakest
         if (potentialTarget.getAttackSuccessProbability() < weakestAttackProbability) {
             weakest = potentialTarget;
             weakestAttackProbability = potentialTarget.getAttackSuccessProbability();
         }
-        
     });
 
-    /**
-     * Depending on squad attacking strategy
-     * one of the chosen targets will be returned
-     */
+    return weakest;
+};
+
+/**
+ * @param {Squads} enemies
+ * @returns random squad from enemy list
+ */
+var chooseRandomSquad = function(enemies) {
+    var index = Utils.randomFromRange(0, enemies.length - 1);
+    return enemies[index];
+};
+
+/**
+ * 
+ * @param {Squads} List of enemy squads 
+ * 
+ * @returns Chosen target squad following attacking squad strategy
+ */
+Squad.prototype.chooseTarget = function(enemies) {
     if (this.strategy === 'random') {
-        var index = Utils.randomFromRange(0, enemies.length - 1);
-        return enemies[index];
+        return chooseRandomSquad(enemies);
     } else if (this.strategy === 'strongest') {
-        return strongest;
+        return chooseStrongestSquad(enemies);
     } else if (this.strategy === 'weakest') {
-        return weakest;
+        return chooseWeakestSquad(enemies);
     } else {
         throw Error("Strategy not known: " + this.strategy);
     }
