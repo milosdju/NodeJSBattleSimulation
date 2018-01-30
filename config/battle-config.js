@@ -52,15 +52,19 @@ function BattleConfig() {
     this.validateConfiguration();
 };
 
+/**
+ * TODO: Fix this method!
+ *       Collect all error messages!
+ */
 BattleConfig.prototype.validateConfiguration = function() {
     var valid = true;
     var message = null;
     /**
      * max_armies >= min_armies
      */
-    min_armies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
-    max_armies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
-    if (max_armies != null && min_armies > max_armies) {
+    var minArmies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
+    var maxArmies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
+    if (maxArmies != null && minArmies > maxArmies) {
         valid = false;
         message = "Max number of armies must be >= min number of armies";
     }
@@ -68,9 +72,9 @@ BattleConfig.prototype.validateConfiguration = function() {
     /**
      * max_squads >= min_squads
      */
-    min_squads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
-    max_squads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
-    if (max_squads != null && min_squads > max_squads) {
+    var minSquads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
+    var maxSquads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
+    if (maxSquads != null && minSquads > maxSquads) {
         valid = false;
         message = "Max number of squads must be >= min number of squads";
     }
@@ -78,9 +82,9 @@ BattleConfig.prototype.validateConfiguration = function() {
     /**
      * max_units >= min_units
      */
-    min_units = this.get(this.defaultBattleConfigs.MIN_UNITS);
-    max_units = this.get(this.defaultBattleConfigs.MAX_UNITS);
-    if (min_units > max_units) {
+    var minUnits = this.get(this.defaultBattleConfigs.MIN_UNITS);
+    var maxUnits = this.get(this.defaultBattleConfigs.MAX_UNITS);
+    if (minUnits > maxUnits) {
         valid = false;
         message = "Max number of units must be >= min number of units";
     }

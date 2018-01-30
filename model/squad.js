@@ -49,13 +49,13 @@ Squad.prototype.removeUnit = function(unit) {
 
 Squad.prototype.validateConditions = function() {
     // Check unit number constraint
-    min_units = this.defaultConfigs.get(BattleConfigProperty.MIN_UNITS);
-    if (this.units.length < min_units) {
-        throw Error("Number of squads must be greater than or equal to " + min_units);
+    var minUnits = this.defaultConfigs.get(BattleConfigProperty.MIN_UNITS);
+    if (this.units.length < minUnits) {
+        throw Error("Number of squads must be greater than or equal to " + minUnits);
     }
-    max_units = this.defaultConfigs.get(BattleConfigProperty.MAX_UNITS);
-    if (this.units.length > max_units) {
-        throw Error("Number of squads must be smaller than or equal to " + max_units);
+    var maxUnits = this.defaultConfigs.get(BattleConfigProperty.MAX_UNITS);
+    if (this.units.length > maxUnits) {
+        throw Error("Number of squads must be smaller than or equal to " + maxUnits);
     }
 }
 

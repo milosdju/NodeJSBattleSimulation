@@ -47,9 +47,9 @@ Army.prototype.removeSquad = function(squad) {
 
 Army.prototype.validateConditions = function() {
     // Check squad number constraint
-    min_squads = this.defaultConfigs.get(BattleConfigProperty.MIN_SQUADS);
-    if (this.squads.length < min_squads) {
-        throw Error("Number of squads must be greater than or equal to " + min_squads);
+    var minSquads = this.defaultConfigs.get(BattleConfigProperty.MIN_SQUADS);
+    if (this.squads.length < minSquads) {
+        throw Error("Number of squads must be greater than or equal to " + minSquads);
     }
 };
 

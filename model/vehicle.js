@@ -14,9 +14,9 @@ function Vehicle(health, recharge) {
     this.defaultConfigs = new BattleConfig();
 
     // Validate recharge type and value
-    var min_recharge = this.defaultConfigs.get(BattleConfigProperty.MIN_VEHICLE_RECHARGE);
-    var max_recharge = this.defaultConfigs.get(BattleConfigProperty.MAX_VEHICLE_RECHARGE);
-    if (typeof(recharge) !== "number" || recharge < min_recharge || recharge > max_recharge) {
+    var minRecharge = this.defaultConfigs.get(BattleConfigProperty.MIN_VEHICLE_RECHARGE);
+    var maxRecharge = this.defaultConfigs.get(BattleConfigProperty.MAX_VEHICLE_RECHARGE);
+    if (typeof(recharge) !== "number" || recharge < minRecharge || recharge > maxRecharge) {
         throw Error("Recharge for vehicle must be in range [1000..2000]");
     }
 
@@ -42,8 +42,8 @@ Vehicle.prototype.addOperator = function(soldier) {
     Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
     
     // Check unit number constraint
-    var max_operators = this.defaultConfigs.get(BattleConfigProperty.MAX_NUM_OF_OPERATORS);
-    if (this.operators.length === 3) {
+    var maxOperators = this.defaultConfigs.get(BattleConfigProperty.MAX_NUM_OF_OPERATORS);
+    if (this.operators.length === maxOperators) {
         throw Error("Maximum number of operators per vehicle (3) is reached");
     }
     this.operators.push(soldier);

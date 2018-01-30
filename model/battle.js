@@ -50,9 +50,9 @@ Battle.prototype.validateConditions = function() {
     /**
      * MIN number of armies per battle
      */
-    var min_armies = this.battleConfig.get(BattleConfigProperty.MIN_ARMIES);
-    if (this.armies.length < min_armies) {
-        throw Error("Number of armies per battle must be greater than or equal to " + min_armies);
+    var minArmies = this.battleConfig.get(BattleConfigProperty.MIN_ARMIES);
+    if (this.armies.length < minArmies) {
+        throw Error("Number of armies per battle must be greater than or equal to " + minArmies);
     }
 
     /**
