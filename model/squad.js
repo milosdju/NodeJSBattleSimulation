@@ -129,7 +129,7 @@ Squad.prototype.receiveDamage = function(receivedDamage) {
 
     var dealtDamage = receivedDamage / this.units.length;
     this.units.forEach(function(unit) {
-        alive = unit.receiveDamage(dealtDamage);
+        var alive = unit.receiveDamage(dealtDamage);
         if (!alive) {
             this.removeUnit(unit);
         }
@@ -225,7 +225,7 @@ Squad.prototype.chooseTarget = function(enemies) {
      * one of the chosen targets will be returned
      */
     if (this.strategy === 'random') {
-        index = Utils.randomFromRange(0, enemies.length - 1);
+        var index = Utils.randomFromRange(0, enemies.length - 1);
         return enemies[index];
     } else if (this.strategy === 'strongest') {
         return strongest;
