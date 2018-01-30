@@ -1,9 +1,8 @@
-var Unit = require('./unit'),
-    Soldier = require('./soldier'),
-    Vehicle = require('./vehicle'),
-    Utils = require('../utils/utils'),
-    BattleConfig = require('../config/battle-config').BattleConfig,
-    BattleConfigProperty = require('../config/battle-config').BattleConfigProperty;
+import Unit from './unit';
+import Soldier from './soldier';
+import Vehicle from './vehicle';
+import Utils from '../utils/utils';
+import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
 
 /**
  * Squad constructor
