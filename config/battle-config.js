@@ -1,5 +1,5 @@
-var path = require('path'),
-    propertiesReader = require('properties-reader');
+import path from 'path';
+import propertiesReader from 'properties-reader';
 
 /**
  * Default Battle configuration file
@@ -39,71 +39,75 @@ var BattleConfigProperty = {
 };
 Object.freeze(BattleConfigProperty);
 
-/**
- * BattleConfig class (prototype)
- * 
- * TODO: need to be singleton
- * 
- */
-function BattleConfig() {
-    this.defaultBattleConfigs = propertiesReader(path.join(__dirname, configFile));
-    
-    // Validate configuration
-    this.validateConfiguration();
-};
-
-/**
- * TODO: Fix this method!
- *       Collect all error messages!
- */
-BattleConfig.prototype.validateConfiguration = function() {
-    var valid = true;
-    var message = null;
+class BattleConfig {
     /**
-     * max_armies >= min_armies
+     * BattleConfig constructor
      */
-    var minArmies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
-    var maxArmies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
-    if (maxArmies != null && minArmies > maxArmies) {
-        valid = false;
-        message = "Max number of armies must be >= min number of armies";
-    }
+    constructor() {
+        if (!BattleConfig.instance) {
+            this.defaultBattleConfigs = propertiesReader(path.join(__dirname, configFile));
+            
+            // Validate configuration
+            this.validateConfiguration();
+            
+            BattleConfig.instance = this;
+        }
+        return BattleConfig.instance;
+    };
 
     /**
-     * max_squads >= min_squads
+     * TODO: Fix this method!
+     *       Collect all error messages!
      */
-    var minSquads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
-    var maxSquads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
-    if (maxSquads != null && minSquads > maxSquads) {
-        valid = false;
-        message = "Max number of squads must be >= min number of squads";
-    }
+    validateConfiguration() {
+        var valid = true;
+        var message = null;
+        /**
+         * max_armies >= min_armies
+         */
+        var minArmies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
+        var maxArmies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
+        if (maxArmies != null && minArmies > maxArmies) {
+            valid = false;
+            message = "Max number of armies must be >= min number of armies";
+        }
+
+        /**
+         * max_squads >= min_squads
+         */
+        var minSquads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
+        var maxSquads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
+        if (maxSquads != null && minSquads > maxSquads) {
+            valid = false;
+            message = "Max number of squads must be >= min number of squads";
+        }
+
+        /**
+         * max_units >= min_units
+         */
+        var minUnits = this.get(this.defaultBattleConfigs.MIN_UNITS);
+        var maxUnits = this.get(this.defaultBattleConfigs.MAX_UNITS);
+        if (minUnits > maxUnits) {
+            valid = false;
+            message = "Max number of units must be >= min number of units";
+        }
+
+        if (!valid) {
+            this.resetConfiguration(this.defaultBattleConfig);
+            throw Error(message);
+        }
+    };
 
     /**
-     * max_units >= min_units
+     * Getter
+     * 
+     * @returns property value
+     * 
      */
-    var minUnits = this.get(this.defaultBattleConfigs.MIN_UNITS);
-    var maxUnits = this.get(this.defaultBattleConfigs.MAX_UNITS);
-    if (minUnits > maxUnits) {
-        valid = false;
-        message = "Max number of units must be >= min number of units";
-    }
-
-    if (!valid) {
-        this.resetConfiguration(this.defaultBattleConfig);
-        throw Error(message);
-    }
-};
-
-/**
- * Getter
- * 
- * @returns property value
- * 
- */
-BattleConfig.prototype.get = function(battleConfigProperty) {
-    return this.defaultBattleConfigs.get(battleConfigProperty);
-};
+    get(battleConfigProperty) {
+        return this.defaultBattleConfigs.get(battleConfigProperty);
+    };
+}
 
 /**
  * Export BattleConfig
