@@ -1,6 +1,6 @@
 import Unit from './unit';
 import Utils from '../utils/utils';
-import BattleConfigProperty from '../config/battle-config';
+import { BattleConfigProperty } from '../config/battle-config';
 
 class Soldier extends Unit {
 
