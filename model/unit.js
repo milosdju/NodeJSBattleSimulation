@@ -1,3 +1,4 @@
+import Utils from '../utils/utils';
 import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
 
 class Unit {
@@ -17,17 +18,32 @@ class Unit {
         this.recharge = recharge === null ? defaultRechargeValue : recharge;
 
         // Validate health type and value
-        if (health !== null && (typeof(health) !== 'number' || health < 1 || health > 100)) {
+        if (health !== null && (!Utils.validateType(health, "number") || health < 1 || health > 100)) {
             throw Error("Health must be in range [1..100]")
         }
     
         // Validate recharge type
-        if (typeof(recharge) !== 'number') {
-            throw Error("Recharge must be number");
-        }
+        Utils.checkType(recharge, "number", "Recharge must be number");
 
     }
     
+    /**
+     * 
+     * The damage received in battle is 
+     * subtracted from health of soldier
+     * 
+     * @param {number} reveivedDamage 
+     * 
+     * @returns TRUE  if soldier is still alive
+     *          FALSE if soldier is dead
+     */
+    receiveDamage(receivedDamage) {
+        Utils.checkType(receivedDamage, "number", "Received damage must be number");
+
+        this.health -= receivedDamage;
+        return this.health <= 0;
+    }
+
     /**
      * Geometry avg = nth root of all units multiplied, 
      * where n is # of units
@@ -40,9 +56,7 @@ class Unit {
     static geometricAvgOfAttackSuccessProbabilities(units) {
         var totalAttackSuccessProbability = 1;
         units.forEach(function(unit){
-            if (!(unit instanceof Unit)) {
-                throw Error("Function accepts only units");
-            }
+            Utils.checkClass(unit, Unit, "Function accepts only units");
             totalAttackSuccessProbability *= unit.calculateAttackSuccessProbability();
         });
          

@@ -24,32 +24,9 @@ class Soldier extends Unit {
         }
 
         // Validate experience type and value
-        if (this.experience !== null && (typeof(this.experience) !== 'number' || this.experience < 0 || this.experience > 50)) {
+        if (this.experience !== null && 
+            (!Utils.validateType(this.experience, "number") || this.experience < 0 || this.experience > 50)) {
             throw Error("Experience [" + this.experience + "] must be in range [0..50]");
-        }
-    }
-
-    /**
-     * 
-     * The damage received in battle is 
-     * subtracted from health of soldier
-     * 
-     * @param {number} reveivedDamage 
-     * 
-     * @returns TRUE  if soldier is still alive
-     *          FALSE if soldier is dead
-     */
-    receiveDamage(receivedDamage) {
-        if (typeof(receivedDamage) !== "number") {
-            throw Error("Received damage must be number");
-        }
-
-        this.health -= receivedDamage;
-
-        if (this.health <= 0) {
-            return false;
-        } else {
-            return true;
         }
     }
 

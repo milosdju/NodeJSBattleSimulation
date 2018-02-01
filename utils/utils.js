@@ -53,9 +53,20 @@ class Utils {
         if (errorMessage === null) {
             errorMessage = "Invalid input type: " + value + " should be of type " + typeStr;
         }
-        if (!(typeof(value) === typeStr)) {
+        if (!Utils.validateType(value, typeStr)) {
             throw Error(errorMessage);
         }
+    }
+
+    /**
+     * @param {*} value 
+     * @param {String} typeStr
+     * 
+     * @returns TRUE if value is of type 'typeStr',
+     *          FALSE otherwise 
+     */
+    static validateType(value, typeStr) {
+        return typeof(value) === typeStr;
     }
 }
 

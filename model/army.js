@@ -24,9 +24,7 @@ class Army {
      * @param {Squad} squad 
      */
    addSquad(squad) {
-        if (!(squad instanceof Squad)) {
-            throw Error("Only Squad can be part of armies");
-        }
+        Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
         this.squads.push(squad);
     };
 
@@ -36,9 +34,7 @@ class Army {
      * @param {Squad} squad 
      */
     removeSquad(squad) {
-        if (!(squad instanceof Squad)) {
-            throw Error("Only Squad can be part of armies");
-        }
+        Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
 
         var index = this.squads.indexOf(squad);
         if (index !== -1) {

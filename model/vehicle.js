@@ -17,7 +17,7 @@ class Vehicle extends Unit {
         // Validate recharge type and value
         var minRecharge = this.defaultConfigs.get(BattleConfigProperty.MIN_VEHICLE_RECHARGE);
         var maxRecharge = this.defaultConfigs.get(BattleConfigProperty.MAX_VEHICLE_RECHARGE);
-        if (typeof(this.recharge) !== "number" || this.recharge < minRecharge || this.recharge > maxRecharge) {
+        if (!Utils.validateType(this.recharge, 'number') || this.recharge < minRecharge || this.recharge > maxRecharge) {
             throw Error("Recharge for vehicle must be in range [1000..2000]");
         }
 
@@ -72,9 +72,7 @@ class Vehicle extends Unit {
      *          FALSE if Vehicle is dead
      */
     receiveDamage(receivedDamage) {
-        if (typeof(receivedDamage) !== 'number') {
-            throw Error("Received damage must be number");
-        }
+        Utils.checkType(receivedDamage, "number", "Received damage must be number")
 
         /**
          * Vehicle receive 60% of total received damage
@@ -101,7 +99,7 @@ class Vehicle extends Unit {
             if (!operatorAlive) {
                 this.removeOperator(operator);
             }
-        });
+        }, this);
 
         /**
          * 

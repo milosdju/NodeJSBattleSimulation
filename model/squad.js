@@ -25,9 +25,7 @@ class Squad {
      * @param {Unit} unit 
      */
     addUnit(unit) {
-        if (!(unit instanceof Unit)) {
-            throw Error("Only Units can be part of squads");
-        }
+        Utils.checkClass(unit, Unit, "Only Units can be part of squads");
         // TODO: check unit number constraint
         this.units.push(unit);
     };
@@ -38,9 +36,7 @@ class Squad {
      * @param {Unit} unit 
      */
     removeUnit(unit) {
-        if (!(unit instanceof Unit)) {
-            throw Error("Only Units can be part of squads");
-        }
+        Utils.checkClass(unit, Unit, "Only Units can be part of squads");
     
         var index = this.units.indexOf(unit);
         if (index !== -1) {
@@ -124,9 +120,7 @@ class Squad {
      *          FALSE if squad is not anymore operable (i.e. all units are dead)
      */
     receiveDamage(receivedDamage) {
-        if (typeof(receivedDamage) !== "number") {
-            throw Error("Received damage must be number");
-        }
+        Utils.checkType(receivedDamage, "number", "Received damage must be number");
     
         var dealtDamage = receivedDamage / this.units.length;
         this.units.forEach(function(unit) {
