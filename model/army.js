@@ -1,5 +1,6 @@
 import Unit from './unit';
 import Squad from './squad';
+import Utils from '../utils/utils';
 import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
 
 class Army {
