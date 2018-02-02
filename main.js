@@ -1,9 +1,10 @@
-var Battle = require('./model/battle'),
-    Unit = require('./model/unit'),
-    Soldier = require('./model/soldier'),
-    Vehicle = require('./model/vehicle'),
-    Squad = require('./model/squad'),
-    Army = require('./model/army');
+import Battle from './simulation/battle';
+import Unit from './entity/units/unit';
+import Soldier from './entity/units/soldier';
+import Vehicle from './entity/units/vehicle';
+import Squad from './entity/squad/squad';
+import Army from './entity/army/army';
+import AttackStrategy from './entity/squad/attack-strategy';
 
 /* SQUAD 1 */
 var s1 = new Soldier(null, 250, 0);
@@ -17,7 +18,7 @@ v1.addOperator(s3);
 v1.addOperator(s4);
 v1.addOperator(s5);
 
-var sq1 = new Squad('strongest');
+var sq1 = new Squad(AttackStrategy.STRONGEST);
 sq1.addUnit(s1);
 sq1.addUnit(s2);
 //sq1.addUnit(v1);
@@ -30,7 +31,7 @@ var s8 = new Soldier(null, 500, 20);
 var s9 = new Soldier(null, 500, 20);
 var s10 = new Soldier(null, 600, 50);
 
-var sq2 = new Squad('random');
+var sq2 = new Squad(AttackStrategy.RANDOM);
 sq2.addUnit(s6);
 sq2.addUnit(s7);
 sq2.addUnit(s8);
@@ -47,7 +48,7 @@ v2.addOperator(s11);
 v2.addOperator(s12);
 v2.addOperator(s13);
 
-var sq3 = new Squad('random');
+var sq3 = new Squad(AttackStrategy.RANDOM);
 sq3.addUnit(v2);
 
 /* SQUAD 4 */
@@ -60,7 +61,7 @@ v3.addOperator(s21);
 v3.addOperator(s22);
 v3.addOperator(s23);
 
-var sq4 = new Squad('random');
+var sq4 = new Squad(AttackStrategy.RANDOM);
 sq4.addUnit(v3);
 
 /* ARMY 1 */

@@ -1,8 +1,9 @@
-import Unit from './unit';
-import Soldier from './soldier';
-import Vehicle from './vehicle';
-import Utils from '../utils/utils';
-import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
+import AttackStrategy from './attack-strategy';
+import Unit from '../units/unit';
+import Soldier from '../units/soldier';
+import Vehicle from '../units/vehicle';
+import Utils from '../../utils/utils';
+import { BattleConfig, BattleConfigProperty } from '../../config/battle-config';
 
 /**
  * Squad constructor
@@ -45,6 +46,11 @@ class Squad {
     };
     
     validateConditions() {
+        // Check strategy
+        if (this.strategy === null) {
+            throw Error("Strategy must be set");
+        }
+
         // Check unit number constraint
         var minUnits = this.defaultConfigs.get(BattleConfigProperty.MIN_UNITS);
         if (this.units.length < minUnits) {
@@ -240,11 +246,11 @@ class Squad {
      * @returns Chosen target squad following attacking squad strategy
      */
     chooseTarget(enemies) {
-        if (this.strategy === 'random') {
+        if (this.strategy === AttackStrategy.RANDOM) {
             return this._chooseRandomSquad(enemies);
-        } else if (this.strategy === 'strongest') {
+        } else if (this.strategy === AttackStrategy.STRONGEST) {
             return this._chooseStrongestSquad(enemies);
-        } else if (this.strategy === 'weakest') {
+        } else if (this.strategy === AttackStrategy.WEAKEST) {
             return this._chooseWeakestSquad(enemies);
         } else {
             throw Error("Strategy not known: " + this.strategy);

@@ -1,5 +1,5 @@
-import Utils from '../utils/utils';
-import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
+import Utils from '../../utils/utils';
+import { BattleConfig, BattleConfigProperty } from '../../config/battle-config';
 
 class Unit {
 
@@ -17,13 +17,9 @@ class Unit {
         var defaultRechargeValue = this.defaultConfigs.get(BattleConfigProperty.DEFAULT_RECHARGE);
         this.recharge = recharge === null ? defaultRechargeValue : recharge;
 
-        // Validate health type and value
-        if (health !== null && (!Utils.validateType(health, "number") || health < 1 || health > 100)) {
-            throw Error("Health must be in range [1..100]")
-        }
-    
-        // Validate recharge type
-        Utils.checkType(recharge, "number", "Recharge must be number");
+        // Validate Unit properties
+        this.validateConditions();
+        
 
     }
     
@@ -43,6 +39,21 @@ class Unit {
         this.health -= receivedDamage;
         return this.health <= 0;
     }
+
+    /**
+     * @throws Error if some of constraints are not met
+     */
+    validateConditions() {
+        // Validate health type and value
+        var minHealth = this.defaultConfigs.get(BattleConfigProperty.MIN_HEALTH);
+        var maxHealth = this.defaultConfigs.get(BattleConfigProperty.MAX_HEALTH);
+        if (!Utils.validateType(this.health, "number") || this.health < minHealth || this.health > maxHealth) {
+            throw Error("Health must be in range [" + minHealth + ".." + maxHealth + "]")
+        }
+    
+        // Validate recharge type
+        Utils.checkType(this.recharge, "number", "Recharge must be number");
+    };
 
     /**
      * Geometry avg = nth root of all units multiplied, 

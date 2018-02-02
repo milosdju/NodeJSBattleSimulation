@@ -56,20 +56,16 @@ class BattleConfig {
     };
 
     /**
-     * TODO: Fix this method!
-     *       Collect all error messages!
+     * @throws Error if some of the constraints are not met
      */
     validateConfiguration() {
-        var valid = true;
-        var message = null;
         /**
          * max_armies >= min_armies
          */
         var minArmies = this.get(this.defaultBattleConfigs.MIN_ARMIES);
         var maxArmies = this.get(this.defaultBattleConfigs.MAX_ARMIES);
         if (maxArmies != null && minArmies > maxArmies) {
-            valid = false;
-            message = "Max number of armies must be >= min number of armies";
+            throw Error("Max number of armies must be >= min number of armies");
         }
 
         /**
@@ -78,8 +74,7 @@ class BattleConfig {
         var minSquads = this.get(this.defaultBattleConfigs.MIN_SQUADS);
         var maxSquads = this.get(this.defaultBattleConfigs.MAX_SQUADS);
         if (maxSquads != null && minSquads > maxSquads) {
-            valid = false;
-            message = "Max number of squads must be >= min number of squads";
+            throw Error("Max number of squads must be >= min number of squads");
         }
 
         /**
@@ -88,14 +83,9 @@ class BattleConfig {
         var minUnits = this.get(this.defaultBattleConfigs.MIN_UNITS);
         var maxUnits = this.get(this.defaultBattleConfigs.MAX_UNITS);
         if (minUnits > maxUnits) {
-            valid = false;
-            message = "Max number of units must be >= min number of units";
+            throw Error("Max number of units must be >= min number of units");
         }
 
-        if (!valid) {
-            this.resetConfiguration(this.defaultBattleConfig);
-            throw Error(message);
-        }
     };
 
     /**

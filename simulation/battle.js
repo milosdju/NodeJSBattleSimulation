@@ -1,4 +1,4 @@
-import Army from './army';
+import Army from '../entity/army/army';
 import Utils from '../utils/utils';
 import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
 
