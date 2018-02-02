@@ -1,5 +1,5 @@
-import Utils from '../../utils/utils';
-import { BattleConfig, BattleConfigProperty } from '../../config/battle-config';
+import Utils from '~/utils/utils';
+import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
 class Unit {
 

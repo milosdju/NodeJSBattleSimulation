@@ -1,7 +1,7 @@
 import Unit from './unit';
 import Soldier from './soldier';
-import Utils from '../../utils/utils';
-import { BattleConfigProperty } from '../../config/battle-config';
+import Utils from '~/utils/utils';
+import { BattleConfigProperty } from '~/config/battle-config';
 
 class Vehicle extends Unit {
     /**

@@ -1,6 +1,6 @@
-import Army from '../entity/army/army';
-import Utils from '../utils/utils';
-import { BattleConfig, BattleConfigProperty } from '../config/battle-config';
+import Army from '~/entity/army/army';
+import Utils from '~/utils/utils';
+import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
 class Battle {
     /**

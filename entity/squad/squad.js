@@ -2,8 +2,8 @@ import AttackStrategy from './attack-strategy';
 import Unit from '../units/unit';
 import Soldier from '../units/soldier';
 import Vehicle from '../units/vehicle';
-import Utils from '../../utils/utils';
-import { BattleConfig, BattleConfigProperty } from '../../config/battle-config';
+import Utils from '~/utils/utils';
+import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
 /**
  * Squad constructor
