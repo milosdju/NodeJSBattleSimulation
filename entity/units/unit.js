@@ -12,15 +12,13 @@ class Unit {
 
         // If property is null, set default value
         var defaultHealthValue = this.defaultConfigs.get(BattleConfigProperty.DEFAULT_HEALTH);
-        this.health = health === null ? defaultHealthValue : health;
+        this.health = health == null ? defaultHealthValue : health;
 
         var defaultRechargeValue = this.defaultConfigs.get(BattleConfigProperty.DEFAULT_RECHARGE);
-        this.recharge = recharge === null ? defaultRechargeValue : recharge;
+        this.recharge = recharge == null ? defaultRechargeValue : recharge;
 
         // Validate Unit properties
         this.validateConditions();
-        
-
     }
     
     /**
@@ -48,7 +46,7 @@ class Unit {
         var minHealth = this.defaultConfigs.get(BattleConfigProperty.MIN_HEALTH);
         var maxHealth = this.defaultConfigs.get(BattleConfigProperty.MAX_HEALTH);
         if (!Utils.validateType(this.health, "number") || this.health < minHealth || this.health > maxHealth) {
-            throw Error("Health must be in range [" + minHealth + ".." + maxHealth + "]")
+            throw Error("Health [" + this.health + "] must be in range [" + minHealth + ".." + maxHealth + "]")
         }
     
         // Validate recharge type

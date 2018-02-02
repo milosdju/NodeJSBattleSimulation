@@ -1,0 +1,77 @@
+{
+    "armies": [
+        {
+            "name": "A1",
+            "squads": [
+                {
+                    "name": "A1S1",
+                    "strategy": "strongest",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "quantity": 2,
+                            "health": 100,
+                            "recharge": 250,
+                            "experience": 0
+                        },
+                        {
+                            "type": "soldier"
+                        },
+                        {
+                            "type": "vehicle",
+                            "quantity": 1,
+                            "recharge": 1200,
+                            "operators": 3
+                        }
+                    ]
+                },
+                {
+                    "name": "A1S2",
+                    "strategy": "random",
+                    "units":[
+                        {
+                            "type": "vehicle",
+                            "operators": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "A2",
+            "squads":[
+                {
+                    "name": "A2S1",
+                    "strategy": "random",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "quantity": 4,
+                            "recharge": 500,
+                            "experience": 20
+                        },
+                        {
+                            "type": "soldier",
+                            "recharge": 600,
+                            "experience": 50
+                        },
+                        {
+                            "type": "vehicle",
+                            "operators": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "A2S2",
+                    "strategy": "random",
+                    "units": [
+                        {
+                            "type": "vehicle",
+                            "operators": 3
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

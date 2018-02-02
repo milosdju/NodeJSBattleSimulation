@@ -15,6 +15,7 @@
   "author": "Milos Djukic",
   "license": "ISC",
   "dependencies": {
+    "config": "^1.29.2",
     "properties-reader": "0.0.16"
   },
   "devDependencies": {

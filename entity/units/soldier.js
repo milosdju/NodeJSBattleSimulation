@@ -16,7 +16,7 @@ class Soldier extends Unit {
 
         // if experience is null, set default property
         var defaultExperienceValue = this.defaultConfigs.get(BattleConfigProperty.DEFAULT_EXPERIENCE);
-        this.experience = experience === null ? defaultExperienceValue : experience;
+        this.experience = experience == null ? defaultExperienceValue : experience;
 
         this.validateSoldierConditions();
     }

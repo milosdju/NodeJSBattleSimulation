@@ -12,7 +12,7 @@ class Army {
         this.defaultConfigs = new BattleConfig();
 
         // Initialize fields
-        if (name === null) {
+        if (name == null) {
             throw Error("Army must be named");
         }
         this.name = name;

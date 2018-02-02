@@ -1,6 +1,9 @@
 import Army from '~/entity/army/army';
+import Squad from '~/entity/squad/squad';
+import Unit from '~/entity/units/unit';
 import Utils from '~/utils/utils';
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
+import config from 'config';
 
 class Battle {
     /**
@@ -43,10 +46,45 @@ class Battle {
         console.log("Army [" + army.name + "] is removed");
     };
 
+    loadArmiesFromConfig() {
+        if (!config.has('armies')) {
+            throw Error("Armies must be configured in config/default.json file");
+        }
+
+        var armies = config.get('armies');
+        armies.forEach(function(army){
+            var a = new Army(army.name);
+
+            army.squads.forEach(function(squad){
+                var s = new Squad(squad.name, squad.strategy);
+
+                squad.units.forEach(function(unit){
+                    if (unit.quantity == null) {
+                        s.addUnit(Squad.makeUnit(unit));
+                    } else {
+                        for (var i = 0; i < unit.quantity; i++) {
+                            s.addUnit(Squad.makeUnit(unit));
+                        }
+                    }
+                });
+
+                a.addSquad(s);
+            });
+            this.addArmy(a);
+        }, this);
+    }
+
     /**
      * In order to start battle, certain conditions should be met
      */
     validateConditions() {
+        /**
+         * Check presence of configured armies
+         */
+        if (!config.has('armies')) {
+            throw Error("Armies must be configured in config/default.json file");
+        }
+
         /**
          * MIN number of armies per battle
          */

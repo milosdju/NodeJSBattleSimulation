@@ -55,6 +55,17 @@ class Vehicle extends Unit {
         } 
     };
 
+    /**
+     * Add passed number of default operators
+     * 
+     * @param {Number} numOfOperators 
+     */
+    addDefaultOperators(numOfOperators) {
+        for (var i = 0; i < numOfOperators; i++) {
+            this.addOperator(new Soldier(null, null, null));
+        }
+    }
+
     increaseExperience() {
         this.operators.forEach(function(operator) {
             operator.increaseExperience();

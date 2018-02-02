@@ -10,11 +10,12 @@ import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
  */
 class Squad {
 
-    constructor(strategy) {
+    constructor(name, strategy) {
         this.defaultConfigs = new BattleConfig();
     
         // Initialize fields
         this.units = [];
+        this.name = name;
         this.strategy = strategy;
     
         this.attackSuccessProbability = null;
@@ -45,10 +46,30 @@ class Squad {
         } 
     };
     
+    static makeUnit(params) {
+        var type = params.type;
+        var health = params.health;
+        var recharge = params.recharge;
+        if (type === 'soldier') {
+            var experience = params.experience;
+            return new Soldier(health, recharge, experience);
+        } else if (type === 'vehicle') {
+            var numOfOperators = params.operators;
+            var vehicle = new Vehicle(health, recharge);
+            vehicle.addDefaultOperators(numOfOperators);
+            return vehicle;
+        }
+    };
+
     validateConditions() {
         // Check strategy
-        if (this.strategy === null) {
+        if (this.strategy == null) {
             throw Error("Strategy must be set");
+        }
+
+        // Check name
+        if (this.name == null) {
+            throw Error("Squad name must be set");
         }
 
         // Check unit number constraint
