@@ -101,17 +101,9 @@ class Squad {
      * Total attack success probability (ASP) is calculated
      * as geometric average of all suctinct ASP's
      */
-    calculateAttackSuccessProbability() {
-        return Unit.geometricAvgOfAttackSuccessProbabilities(this.units);
-    };
-    
-    /**
-     * Calculate attack success probability on this squad
-     * and assign value as 'cache' to it
-     */
     recalculateAttackSuccessProbability() {
-        this.attackSuccessProbability = this.calculateAttackSuccessProbability();
-    }
+        this.attackSuccessProbability = Unit.geometricAvgOfAttackSuccessProbabilities(this.units);
+    };
     
     /**
      * @returns cached attack success probability 
@@ -180,8 +172,8 @@ class Squad {
         Utils.checkClass(firstSquad, Squad, "Battle can occur only between Squads");
         Utils.checkClass(secondSquad, Squad, "Battle can occur only between Squads");
     
-        var firstSquadChanceToWin = firstSquad.calculateAttackSuccessProbability();
-        var secondSquadChanceToWin = secondSquad.calculateAttackSuccessProbability();
+        var firstSquadChanceToWin = firstSquad.getAttackSuccessProbability();
+        var secondSquadChanceToWin = secondSquad.getAttackSuccessProbability();
     
         var won = firstSquadChanceToWin > secondSquadChanceToWin;
         

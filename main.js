@@ -8,6 +8,6 @@ import AttackStrategy from './entity/squad/attack-strategy';
 
 /* BATTLE */
 var b = new Battle();
-b1.loadArmiesFromConfig();
+b.loadArmiesFromConfig();
 
-b1.start();
+b.start();
