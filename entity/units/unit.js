@@ -35,7 +35,7 @@ class Unit {
         Utils.checkType(receivedDamage, "number", "Received damage must be number");
 
         this.health -= receivedDamage;
-        return this.health <= 0;
+        return this.health > 0;
     }
 
     /**
@@ -70,6 +70,13 @@ class Unit {
         });
          
         return Math.pow(totalAttackSuccessProbability, 1 / units.length);
+    }
+
+    /**
+     * Print some basic info about Unit
+     */
+    toString() {
+        return `Unit { health: ${this.health.toFixed(2)}, recharge: ${this.recharge.toFixed(2)} }`;
     }
 }
 

@@ -1,7 +1,10 @@
 import Unit from '../units/unit';
 import Squad from '../squad/squad';
 import Utils from '~/utils/utils';
+
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
+
+import logger from 'winston';
 
 class Army {
 
@@ -27,6 +30,7 @@ class Army {
    addSquad(squad) {
         Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
         this.squads.push(squad);
+        logger.debug(`Squad has been assigned to Army ${this.name}: ${squad.name}`);
     };
 
     /**
@@ -41,6 +45,7 @@ class Army {
         if (index !== -1) {
             this.squads.splice(index, 1);
         } 
+        logger.destroyed(`Squad has been removed from Army ${this.name}: ${squad.name}`);
     };
 
     validateConditions() {

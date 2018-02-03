@@ -2,8 +2,11 @@ import Army from '~/entity/army/army';
 import Squad from '~/entity/squad/squad';
 import Unit from '~/entity/units/unit';
 import Utils from '~/utils/utils';
+
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 import config from 'config';
+
+import logger from 'winston';
 
 class Battle {
     /**
@@ -28,6 +31,7 @@ class Battle {
         Utils.checkClass(army, Army, "Only Army can fight in battles");
         // TODO: check squad number constraint
         this.armies.push(army);
+        logger.debug(`Army ${army.name} has been added to battlefield`);
     };
 
     /**
@@ -43,10 +47,11 @@ class Battle {
             this.armies.splice(index, 1);
         } 
 
-        console.log("Army [" + army.name + "] is removed");
+        logger.destroyed(`Army ${army.name} is removed`);
     };
 
     loadArmiesFromConfig() {
+        logger.debug("Loading armies from file...");
         if (!config.has('armies')) {
             throw Error("Armies must be configured in config/default.json file");
         }
@@ -72,12 +77,14 @@ class Battle {
             });
             this.addArmy(a);
         }, this);
+        logger.debug("Loading armies finished");
     }
 
     /**
      * In order to start battle, certain conditions should be met
      */
     validateConditions() {
+        logger.debug("Check list for battle to start...")
         /**
          * Check presence of configured armies
          */
@@ -196,6 +203,8 @@ class Battle {
      * START battle
      */
     start() {
+        logger.debug("Battle is preparing for start...")
+        
         /**
          * Validate conditions
          */
@@ -209,6 +218,7 @@ class Battle {
         /**
          * Iterate attacks until there is only one army left
          */
+        logger.info("Battle has started...");
         while (this.armies.length > 1) {
             var attackingSquad = this.attackOrderWithCashedValues[0].squad;
 
@@ -248,7 +258,7 @@ class Battle {
             this.attackOrderWithCashedValues.sort(this._sortAttackOrder);
         }
 
-        console.log("Army [" + this.armies[0].name + "] has won");
+        logger.won(`Army ${this.armies[0].name} has won`);
     };
 }
 

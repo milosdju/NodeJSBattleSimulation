@@ -119,11 +119,7 @@ class Vehicle extends Unit {
          * alive = FALSE will be returned,
          * otherwise return TRUE
          */
-        if (this.health <= 0 || this.operators.length === 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.health > 0 && this.operators.length !== 0;
     }
 
     /**
@@ -150,6 +146,13 @@ class Vehicle extends Unit {
         return 0.1 + experienceSum / 100;
     }
 
+    /**
+     * Print some basic info about Vehicle
+     */
+    toString() {
+        return `Vehicle { health: ${this.health.toFixed(2)}, recharge: ${this.recharge.toFixed(2)}, 
+        operators: ${this.operators} }`;
+    }
 }
 
 

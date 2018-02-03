@@ -5,6 +5,8 @@ import Vehicle from '../units/vehicle';
 import Utils from '~/utils/utils';
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
+import logger from 'winston';
+
 /**
  * Squad constructor
  */
@@ -19,8 +21,9 @@ class Squad {
         this.strategy = strategy;
     
         this.attackSuccessProbability = null;
+        logger.debug(`Squad ${this.name} is built`);
     };
-    
+
     /**
      * Add unit to squad
      * 
@@ -30,6 +33,7 @@ class Squad {
         Utils.checkClass(unit, Unit, "Only Units can be part of squads");
         // TODO: check unit number constraint
         this.units.push(unit);
+        logger.debug(`Unit has been assigned to Squad ${this.name}: ${unit.toString()}`);
     };
     
     /**
@@ -44,6 +48,7 @@ class Squad {
         if (index !== -1) {
             this.units.splice(index, 1);
         } 
+        logger.destroyed(`Unit has been removed from Squad ${this.name}: ${unit.toString()}`);
     };
     
     static makeUnit(params) {
@@ -140,7 +145,8 @@ class Squad {
      */
     receiveDamage(receivedDamage) {
         Utils.checkType(receivedDamage, "number", "Received damage must be number");
-    
+        logger.damaged(`Squad ${this.name} received ${receivedDamage} damage`);
+
         var dealtDamage = receivedDamage / this.units.length;
         this.units.forEach(function(unit) {
             var alive = unit.receiveDamage(dealtDamage);
@@ -191,7 +197,8 @@ class Squad {
      */
     attack(anotherSquad) {
         Utils.checkClass(anotherSquad, Squad, "Squad can attack only another Squad");
-    
+        logger.info(`Squad ${this.name} attacked ${anotherSquad.name}`)
+
         // DECIDE WINNER
         var won = this._decideWinner(this, anotherSquad);
     
@@ -269,6 +276,13 @@ class Squad {
             throw Error("Strategy not known: " + this.strategy);
         }
     };
+
+    /**
+     * Print some basic info about Squad
+     */
+    toString() {
+        return `strategy: ${this.strategy}, units: ${this.units}`;
+    }
 
 }
 

@@ -16,7 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "config": "^1.29.2",
-    "properties-reader": "0.0.16"
+    "properties-reader": "0.0.16",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

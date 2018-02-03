@@ -66,6 +66,14 @@ class Soldier extends Unit {
             throw Error("Experience must be in range [" + minExperience + ".." + maxExperience + "]");
         }
     }
+
+    /**
+     * Print some basic info about Soldier
+     */
+    toString() {
+        return `Soldier { health: ${this.health.toFixed(2)}, recharge: ${this.recharge.toFixed(2)}, 
+        experience: ${this.experience} }`;
+    }
 }
 
 /**
