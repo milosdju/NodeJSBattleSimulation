@@ -30,7 +30,7 @@ class Soldier extends Unit {
      * Increase experience by 1
      */
     increaseExperience() {
-        if (this.experience < this.defaultConfigs.get(BattleConfigProperty.DEFAULT_EXPERIENCE)) {
+        if (this.experience < this.defaultConfigs.get(BattleConfigProperty.MAX_EXPERIENCE)) {
             this.experience++;
         }
     }
