@@ -12,6 +12,12 @@ import logger from 'winston';
  */
 class Squad {
 
+    /**
+     * Squad constructor
+     * 
+     * @param {String} name 
+     * @param {String} strategy 
+     */
     constructor(name, strategy) {
         this.defaultConfigs = new BattleConfig();
     
@@ -28,6 +34,8 @@ class Squad {
      * Add unit to squad
      * 
      * @param {Unit} unit 
+     * 
+     * @throws Error if non-Unit instance is passed to the function
      */
     addUnit(unit) {
         Utils.checkClass(unit, Unit, "Only Units can be part of squads");
@@ -40,6 +48,8 @@ class Squad {
      * Remove dead unit from squad
      * 
      * @param {Unit} unit 
+     * 
+     * @throws Error if non-Unit instance is passed to the function
      */
     removeUnit(unit) {
         Utils.checkClass(unit, Unit, "Only Units can be part of squads");
@@ -51,6 +61,11 @@ class Squad {
         logger.destroyed(`Unit has been removed from Squad ${this.name}: ${unit.toString()}`);
     };
     
+    /**
+     * Factory method to create Unit of certain type
+     * 
+     * @param {Object} params 
+     */
     static makeUnit(params) {
         var type = params.type;
         var health = params.health;
@@ -66,6 +81,15 @@ class Squad {
         }
     };
 
+    /**
+     * Validate that all Squad constraints are met
+     * 
+     * @throws Error if some of constraints are not met:
+     *      - must have name
+     *      - must have strategy
+     *      - min # of units
+     *      - max # of units
+     */
     validateConditions() {
         // Check strategy
         if (this.strategy == null) {
@@ -88,6 +112,13 @@ class Squad {
         }
     }
     
+    /**
+     * @returns status - is alive
+     */
+    get alive() {
+        return this.units.length > 0;
+    }
+
     /**
      * @returns recharge time for squad
      */
@@ -123,6 +154,8 @@ class Squad {
     /**
      * Inflicted damage by the squad is
      * sum of inflicted damages made by every unit in squad
+     * 
+     * TODO: rename to inflicting
      */
     calculateInflictedDamage() {
         var totalInflictedDamage = 0;
@@ -140,8 +173,7 @@ class Squad {
      * 
      * @param {number} reveivedDamage 
      * 
-     * @returns TRUE  if squad is still operable
-     *          FALSE if squad is not anymore operable (i.e. all units are dead)
+     * @throws Error if non-Number argument is passed
      */
     receiveDamage(receivedDamage) {
         Utils.checkType(receivedDamage, "number", "Received damage must be number");
@@ -154,13 +186,6 @@ class Squad {
                 this.removeUnit(unit);
             }
         }, this);
-    
-        /**
-         * If there is no more units left in squad,
-         * alive = FALSE will be returned,
-         * otherwise return TRUE
-         */
-        return this.units.length > 0;
     };
     
     /**
@@ -173,6 +198,8 @@ class Squad {
      * 
      * @returns TRUE  if firstSquad has won
      *          FALSE if secondSquad has won
+     * 
+     * @throws Error if non-Squad instances are passed to the function
      */
     _decideWinner(firstSquad, secondSquad) {
         Utils.checkClass(firstSquad, Squad, "Battle can occur only between Squads");
@@ -193,7 +220,9 @@ class Squad {
      * @param {Squad} anotherSquad 
      * 
      * @returns TRUE  if firstSquad has won
-     *          FALSE if secondSquad has wo
+     *          FALSE if secondSquad has won
+     * 
+     * @throws Error if non-Squad instance is passed to the function
      */
     attack(anotherSquad) {
         Utils.checkClass(anotherSquad, Squad, "Squad can attack only another Squad");
@@ -202,11 +231,18 @@ class Squad {
         // DECIDE WINNER
         var won = this._decideWinner(this, anotherSquad);
     
-        // Increase experience of winner squad
         if (won) {
+            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (successfully - inflicting ${this.calculateInflictedDamage()} damage)`);
+
+            // Deal damage to defeated squad
+            anotherSquad.receiveDamage(this.calculateInflictedDamage());
+
+            // After successful attack increase experience of winning squad
             this.units.forEach(function(unit){
                 unit.increaseExperience();
             });
+        } else {
+            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (unsuccessfully)`);
         }
     
         return won;
@@ -214,6 +250,7 @@ class Squad {
     
     /**
      * @param {Squads} enemies
+     * 
      * @returns strongest squad from enemy list
      */
     _chooseStrongestSquad(enemies) {
@@ -233,6 +270,7 @@ class Squad {
     
     /**
      * @param {Squads} enemies
+     * 
      * @returns weakest squad from enemy list
      */
     _chooseWeakestSquad(enemies) {
@@ -252,6 +290,7 @@ class Squad {
     
     /**
      * @param {Squads} enemies
+     * 
      * @returns random squad from enemy list
      */
     _chooseRandomSquad(enemies) {
@@ -264,6 +303,8 @@ class Squad {
      * @param {Squads} List of enemy squads 
      * 
      * @returns Chosen target squad following attacking squad strategy
+     * 
+     * @throws Error if Squad strategy is not defined
      */
     chooseTarget(enemies) {
         if (this.strategy === AttackStrategy.RANDOM) {
@@ -283,7 +324,6 @@ class Squad {
     toString() {
         return `strategy: ${this.strategy}, units: ${this.units}`;
     }
-
 }
 
 /**

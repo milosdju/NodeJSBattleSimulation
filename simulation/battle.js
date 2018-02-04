@@ -10,7 +10,7 @@ import logger from 'winston';
 
 class Battle {
     /**
-     * Constructor
+     * Battle Constructor
      */
     constructor() {
         /**
@@ -26,10 +26,12 @@ class Battle {
      * Add army in battlefield
      * 
      * @param {Army} army 
+     * 
+     * @throws Error if non-Army instance is passed to the function
      */
     addArmy(army) {
         Utils.checkClass(army, Army, "Only Army can fight in battles");
-        // TODO: check squad number constraint
+        
         this.armies.push(army);
         logger.debug(`Army ${army.name} has been added to battlefield`);
     };
@@ -38,6 +40,8 @@ class Battle {
      * Remove defeated army from battlefield
      * 
      * @param {Army} army 
+     * 
+     * @throws Error if non-Army instance is passed to the function
      */
     removeArmy(army) {
         Utils.checkClass(army, Army, "Only Army can be removed from battlefield");
@@ -50,6 +54,12 @@ class Battle {
         logger.destroyed(`Army ${army.name} is removed`);
     };
 
+    /**
+     * Loads all actor of Battle 
+     * and add them all to the this Battle instance
+     * 
+     * @throws Error if there is no armies configured in config file 
+     */
     loadArmiesFromConfig() {
         logger.debug("Loading armies from file...");
         if (!config.has('armies')) {
@@ -82,15 +92,14 @@ class Battle {
 
     /**
      * In order to start battle, certain conditions should be met
+     * 
+     * @throws Error if certain conditions are not met:
+     *      - min # of Armies
+     *      - min # of Squads per Army
+     *      - min & max # of Units per Squad
      */
     validateConditions() {
-        logger.debug("Check list for battle to start...")
-        /**
-         * Check presence of configured armies
-         */
-        if (!config.has('armies')) {
-            throw Error("Armies must be configured in config/default.json file");
-        }
+        logger.debug("Check list for battle to start...");
 
         /**
          * MIN number of armies per battle
@@ -163,11 +172,12 @@ class Battle {
     };
 
     /**
-     * 
      * When squad is destroyed, this method will be called in order to
      * remove it from scheduled attack
      * 
      * @param {Squad} squad 
+     * 
+     * @throws Error if `squad` is not present in attack order list
      */
     removeSquadFromScheduledAttackOrder(squad) {
         var idx = -1;
@@ -201,6 +211,8 @@ class Battle {
 
     /**
      * START battle
+     * 
+     * @throws Error if Battle mandatory conditions are not met 
      */
     start() {
         logger.debug("Battle is preparing for start...")
@@ -232,10 +244,7 @@ class Battle {
             // Modify ATTACK PROBABILITY and ATTACK TIME
             // for damaged squad
             if (won) {
-                // DAMAGE is dealt to losing units
-                var targetAlive = targetSquad.receiveDamage(attackingSquad.calculateInflictedDamage());
-
-                if (targetAlive) {
+                if (targetSquad.alive) {
                     // If some units are lost in battle, attack success prob will be decreased
                     targetSquad.recalculateAttackSuccessProbability();
                 } else {
@@ -261,7 +270,6 @@ class Battle {
         logger.won(`Army ${this.armies[0].name} has won`);
     };
 }
-
 
 /**
  * Export Battle

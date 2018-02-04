@@ -5,11 +5,16 @@ import { BattleConfigProperty } from '~/config/battle-config';
 class Soldier extends Unit {
 
     /**
-     * Constructor
+     * Soldier Constructor
      * 
      * @param {Number} health 
      * @param {Number} recharge 
      * @param {Number} experience 
+     * 
+     * @throws Error if some of Soldier constraints are not met:
+     *      - type of health & health in proper range
+     *      - type of recharge & recharge in proper range
+     *      - type of experience & experience in proper range
      */
     constructor(health, recharge, experience) {
         super(health, recharge);
@@ -47,7 +52,10 @@ class Soldier extends Unit {
     }
 
     /**
-     * @throws Error if certain condition is not met
+     * @throws Error if certain condition is not met:
+     *      - type of health & health in proper range
+     *      - type of recharge & recharge in proper range
+     *      - type of experience & experience in proper range
      */
     validateSoldierConditions() {
         super.validateConditions();

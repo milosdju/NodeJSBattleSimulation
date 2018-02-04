@@ -10,6 +10,8 @@ class Army {
 
     /**
      * Army constructor
+     * 
+     * @throws Error if Army has no name
      */
     constructor(name) {
         this.defaultConfigs = new BattleConfig();
@@ -26,6 +28,8 @@ class Army {
      * Add squad to army
      * 
      * @param {Squad} squad 
+     * 
+     * @throws Error if non-Squad instance is passed to the function
      */
    addSquad(squad) {
         Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
@@ -37,6 +41,8 @@ class Army {
      * Remove dead squad from army
      * 
      * @param {Squad} squad 
+     * 
+     * @throws Error if non-Squad instance is passed to the function
      */
     removeSquad(squad) {
         Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
@@ -48,6 +54,12 @@ class Army {
         logger.destroyed(`Squad has been removed from Army ${this.name}: ${squad.name}`);
     };
 
+    /**
+     * Validate creation Army constraints
+     * 
+     * @throws Error if if some of constraints are not met:
+     *      - min # of squads
+     */
     validateConditions() {
         // Check squad number constraint
         var minSquads = this.defaultConfigs.get(BattleConfigProperty.MIN_SQUADS);

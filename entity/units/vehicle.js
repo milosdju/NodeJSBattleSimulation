@@ -5,10 +5,14 @@ import { BattleConfigProperty } from '~/config/battle-config';
 
 class Vehicle extends Unit {
     /**
-     * Constructor
+     * Vehicle Constructor
      * 
      * @param {Number} health 
      * @param {Number} recharge 
+     * 
+     * @throws Error if some of Vehicle constraints are not met:
+     *      - type of health & health in proper range
+     *      - type of recharge & recharge in proper range
      */
     constructor(health, recharge) {
         // Call super constructor
@@ -29,6 +33,10 @@ class Vehicle extends Unit {
      * Add soldier to vehicle
      * 
      * @param {Soldier} soldier 
+     * 
+     * @throws Error if:
+     *      - non-Soldier instance is passed to the function
+     *      - maximum number of operators is reached
      */
     addOperator(soldier) {
         Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
@@ -36,7 +44,7 @@ class Vehicle extends Unit {
         // Check unit number constraint
         var maxOperators = this.defaultConfigs.get(BattleConfigProperty.MAX_NUM_OF_OPERATORS);
         if (this.operators.length === maxOperators) {
-            throw Error("Maximum number of operators per vehicle (3) is reached");
+            throw Error(`Maximum number of operators per vehicle (${maxOperators}) is reached`);
         }
         this.operators.push(soldier);
     };
@@ -45,6 +53,8 @@ class Vehicle extends Unit {
      * Remove dead soldier from vehicle
      * 
      * @param {Soldier} soldier 
+     * 
+     * @throws Error if non-Soldier instance is passed to the function
      */
     removeOperator(soldier) {
         Utils.checkClass(soldier, Soldier, "Only Soldier can be operator");
@@ -81,6 +91,8 @@ class Vehicle extends Unit {
      * 
      * @returns TRUE  if Vehicle is still alive
      *          FALSE if Vehicle is dead
+     * 
+     * @throws Error if non-Number argument is passed
      */
     receiveDamage(receivedDamage) {
         Utils.checkType(receivedDamage, "number", "Received damage must be number")
@@ -154,7 +166,6 @@ class Vehicle extends Unit {
         operators: ${this.operators} }`;
     }
 }
-
 
 /**
  * Export Vehicle constructor

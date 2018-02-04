@@ -4,7 +4,11 @@ import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 class Unit {
 
     /**
-     * Constructor
+     * Unit Constructor
+     * 
+     * @throws Error if some of Unit constraints are not met:
+     *      - type of health & health in proper range
+     *      - type of recharge
      */
     constructor(health, recharge) {
         // Import default config
@@ -30,6 +34,8 @@ class Unit {
      * 
      * @returns TRUE  if soldier is still alive
      *          FALSE if soldier is dead
+     * 
+     * @throws Error if non-Number argument is passed
      */
     receiveDamage(receivedDamage) {
         Utils.checkType(receivedDamage, "number", "Received damage must be number");
@@ -39,7 +45,9 @@ class Unit {
     }
 
     /**
-     * @throws Error if some of constraints are not met
+     * @throws Error if some of constraints are not met:
+     *      - health in proper range
+     *      - type of recharge property
      */
     validateConditions() {
         // Validate health type and value
