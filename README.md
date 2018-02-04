@@ -1,6 +1,21 @@
 # Project                
 
-## Description
+## Table of Contents
+1. [Description](#Description)
+2. [How to run simulation](#How-to-run-simulation)
+3. [Development](#Development)
+   1. [Dependencies](#Project-dependencies)
+      1. [Non-dev dependencies](#Non-dev-dependencies)
+      2. [Dev dependencies](#Dev-dependencies)
+    2. [Build & Run](#Build-&-Run)
+    3. [Configuration](#Configuration)
+       1. [Battle default constraints](#Battle-default-constraints)
+       2. [Armies configuration](#Armies-configuration)
+    4. [Logging](#Logging)
+       1. [Description](#Description)
+
+
+## Description 
 Battle simulation with conflicting Armies. Every Army will be divided in Squads, among which fighting is taking place. 
 Every Squad is contained of two types of units:   
 1. Soldier    
