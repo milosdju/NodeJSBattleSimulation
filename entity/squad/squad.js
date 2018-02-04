@@ -1,8 +1,10 @@
 import AttackStrategy from './attack-strategy';
 import Unit from '../units/unit';
+import UnitType from '../units/unit-type';
 import Soldier from '../units/soldier';
 import Vehicle from '../units/vehicle';
 import Utils from '~/utils/utils';
+
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
 import logger from 'winston';
@@ -64,19 +66,23 @@ class Squad {
      * Factory method to create Unit of certain type
      * 
      * @param {Object} params 
+     * 
+     * @throws Error if unknown Unit type is passed
      */
     static makeUnit(params) {
         var type = params.type;
         var health = params.health;
         var recharge = params.recharge;
-        if (type === 'soldier') {
+        if (type === UnitType.SOLDIER) {
             var experience = params.experience;
             return new Soldier(health, recharge, experience);
-        } else if (type === 'vehicle') {
+        } else if (type === UnitType.VEHICLE) {
             var numOfOperators = params.operators;
             var vehicle = new Vehicle(health, recharge);
             vehicle.addDefaultOperators(numOfOperators);
             return vehicle;
+        } else {
+            throw Error(`Unknown Unit type ${type}`);
         }
     };
 
@@ -225,7 +231,7 @@ class Squad {
      */
     attack(anotherSquad) {
         Utils.checkClass(anotherSquad, Squad, "Squad can attack only another Squad");
-        logger.info(`Squad ${this.name} attacked ${anotherSquad.name}`)
+        logger.debug(`Squad ${this.name} attacked ${anotherSquad.name}`)
 
         // DECIDE WINNER
         var won = this._decideWinner(this, anotherSquad);
