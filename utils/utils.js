@@ -22,6 +22,19 @@ class Utils {
     }
 
     /**
+     * @param {Number} numbers 
+     * 
+     * @returns geometric average of passed numbers
+     */
+    static calculateGeometricAverage(...numbers) {
+        let total = 1;
+        numbers.forEach(function(num){
+            total *= num;
+        });
+        return Math.pow(total, 1 / numbers.length);
+    }
+
+    /**
      * Validate is `value` of type `clazz` 
      * 
      * @param {*} value 

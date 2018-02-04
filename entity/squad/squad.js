@@ -257,19 +257,48 @@ class Squad {
     };
     
     /**
+     * @returns mean average health of all units in squad
+     */
+    get overallHealth() {
+        let totalHealth = 0;
+        this.units.forEach(function(unit){
+            totalHealth += unit.health;
+        });
+        return totalHealth / this.units.length;
+    }
+
+    /**
+     * Estimated strength is calculated as geometric average over:
+     *      - overallHealth
+     *      - number of units
+     *      - inflicting damage that squad can make
+     *      - attack success probability of the squad
+     * 
+     * @returns estimated strength of the Squad
+     */
+    get strength() {
+        let overallHealth = this.overallHealth;
+        let numOfUnits = this.units.length;
+        let inflictingDamage = this.inflictingDamage;
+        let attackSuccessProbability = this.attackSuccessProbability;
+
+        return Utils.calculateGeometricAverage(overallHealth, numOfUnits, inflictingDamage, attackSuccessProbability);
+    }
+    
+    /**
      * @param {Squads} enemies
      * 
      * @returns strongest squad from enemy list
      */
     _chooseStrongestSquad(enemies) {
         var strongest = null;
-        var strongestAttackProbability = 0;
+        var strongestStrength = 0;
     
         enemies.forEach(function(potentialTarget){
             // Choose strongest
-            if (potentialTarget.attackSuccessProbability > strongestAttackProbability) {
+            if (potentialTarget.strength > strongestStrength) {
                 strongest = potentialTarget;
-                strongestAttackProbability = potentialTarget.attackSuccessProbability;
+                strongestStrength = potentialTarget.strength;
             } 
         });
     
@@ -283,13 +312,13 @@ class Squad {
      */
     _chooseWeakestSquad(enemies) {
         var weakest = null;
-        var weakestAttackProbability = 1;
+        var weakestStrength = 1;
     
         enemies.forEach(function(potentialTarget){
             // Choose weakest
-            if (potentialTarget.attackSuccessProbability < weakestAttackProbability) {
+            if (potentialTarget.strength < weakestStrength) {
                 weakest = potentialTarget;
-                weakestAttackProbability = potentialTarget.attackSuccessProbability;
+                weakestStrength = potentialTarget.strength;
             }
         });
     
