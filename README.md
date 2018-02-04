@@ -80,11 +80,11 @@ There is two types of simulation configuration in project:
 {
     armies: [
         {
-            name: string,
+            name: string*,
             squads: [
                 {
-                    name: string,
-                    strategy: strongest|weakest|random*,
+                    name: string*,
+                    strategy: strongest|weakest|random**,
                     units: [
                         {
                             type: soldier|vehicle
@@ -96,7 +96,8 @@ There is two types of simulation configuration in project:
     ]
 }
 ```
-##### Notes:   
+##### Notes:
+* Army and Squad names must be UNIQUE   
 * Strategy values are defined in *battle-config.properties*
 
 **Non-mandatory** fields related to Units characteristics:
