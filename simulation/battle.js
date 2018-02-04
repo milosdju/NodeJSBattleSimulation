@@ -200,12 +200,14 @@ class Battle {
      */
     pullEnemiesOfSquad(squad) {
         var enemies = [];
-        this.attackOrderWithCashedValues.forEach(function(potentialEnemy) {
-            if (squad.army !== potentialEnemy.squad.army) {
-                enemies.push(potentialEnemy.squad);
-            }
-        });
-
+        this.armies.forEach(function(army){
+            army.squads.forEach(function(potentialEnemy){
+                if (squad.army !== potentialEnemy.army) {
+                    enemies.push(potentialEnemy);
+                }
+            }, this);
+        }, this);
+        
         return enemies;
     };
 
@@ -225,44 +227,41 @@ class Battle {
         /**
          * Initialize attack order list
          */
-        this.initAttackOrder();
+        //this.initAttackOrder();
         
         /**
          * Iterate attacks until there is only one army left
          */
         logger.info("Battle has started...");
-        while (this.armies.length > 1) {
-            var attackingSquad = this.attackOrderWithCashedValues[0].squad;
+        this.armies.forEach(function(army){
+            army.squads.forEach(function(squad){
+                squad.attack(this);
+            }, this);
+        }, this);
 
-            // Choose target by attacking squad
-            var attackingSquadEnemies = this.pullEnemiesOfSquad(attackingSquad);
-            var targetSquad = attackingSquad.chooseTarget(attackingSquadEnemies);
-
-            // Perform ATTACK and deliver DAMAGE
-            var won = attackingSquad.attack(targetSquad);
-
-            if (won && !targetSquad.alive) {
-                // Remove squad from army if it's destroyed
-                targetSquad.army.removeSquad(targetSquad);
-
-                // If all army squads are destroyed, remove army from battle
-                if (targetSquad.army.squads.length === 0) {
-                    this.removeArmy(targetSquad.army);
-                }
-
-                // Remove destroyed squad from scheduled attack order
-                this.removeSquadFromScheduledAttackOrder(targetSquad);    
-            } 
-
-            /**
-             * Reorder attacking turn on every iteration
-             */
-            this.attackOrderWithCashedValues[0].attackTime += attackingSquad.recharge;
-            this.attackOrderWithCashedValues.sort(this._sortAttackOrder);
-        }
-
-        logger.won(`Army ${this.armies[0].name} has won`);
     };
+
+    refreshList() {
+        logger.debug("Refreshing battle list...");
+        this.armies.forEach(army => {
+            army.squads.forEach(squad => {
+                // Remove squad from army if it's destroyed
+                if (!squad.alive) {
+                    army.removeSquad(squad);
+                }
+            });
+            // If all army squads are destroyed, remove army from battle
+            if (army.squads.length === 0) {
+                this.removeArmy(army);
+            }
+        });
+        logger.debug("Refreshing battle list finished");
+
+        if (this.armies.length === 1) {
+            logger.won(`Army ${this.armies[0].name} has won`);
+            process.exit();
+        }
+    }
 }
 
 /**

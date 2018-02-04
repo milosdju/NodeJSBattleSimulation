@@ -35,6 +35,7 @@ Battle setup is made in file `config/default.json`. Basic structure how to add a
 * **config** - loading armies into battle
 * **properties-reader** - default-constraint configuration
 * **winston** - logging purposes
+* **async-lock** - used for concurrency locking
 
 #### Dev dependencies:
 * **babel-cli** - used to run babel compiler

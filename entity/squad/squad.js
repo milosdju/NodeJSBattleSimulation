@@ -5,6 +5,9 @@ import Soldier from '../units/soldier';
 import Vehicle from '../units/vehicle';
 import Utils from '~/utils/utils';
 
+import AsyncLock from 'async-lock';
+var lock = new AsyncLock();
+
 import { BattleConfig, BattleConfigProperty } from '~/config/battle-config';
 
 import logger from 'winston';
@@ -182,7 +185,7 @@ class Squad {
      */
     receiveDamage(receivedDamage) {
         Utils.checkType(receivedDamage, "number", "Received damage must be number");
-        logger.damaged(`Squad ${this.name} received ${receivedDamage} damage`);
+        logger.damaged(`Squad ${this.name} received ${receivedDamage.toFixed(2)} damage [current avg health: ${this.overallHealth.toFixed(2)}]`);
 
         var dealtDamage = receivedDamage / this.units.length;
         this.units.forEach(function(unit) {
@@ -220,40 +223,74 @@ class Squad {
     
     /**
      * 
-     * Perform attack on another squad
+     * Perform one attack of Squad against another one
      * 
-     * @param {Squad} anotherSquad 
-     * 
-     * @returns TRUE  if firstSquad has won
-     *          FALSE if secondSquad has won
-     * 
-     * @throws Error if non-Squad instance is passed to the function
+     * @param {Battle} battle 
      */
-    attack(anotherSquad) {
-        Utils.checkClass(anotherSquad, Squad, "Squad can attack only another Squad");
-        logger.debug(`Squad ${this.name} attacked ${anotherSquad.name}`)
+    performAttack(battle) {
+        var enemies = battle.pullEnemiesOfSquad(this);
+        var targetSquad = this.chooseTarget(enemies);
+        
+        /**
+         * Concurrency lock - if targetSquad is already attacked,
+         * attacking squad need to wait 
+         * until already began attack is finished
+         */
+        lock.acquire(targetSquad.name, done => {
+            if (targetSquad.alive) {
 
-        // DECIDE WINNER
-        var won = this._decideWinner(this, anotherSquad);
-    
-        if (won) {
-            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (successfully - inflicting ${this.inflictingDamage} damage)`);
+                logger.debug(`Squad ${this.name} attacked ${targetSquad.name}`)
 
-            // Deal damage to defeated squad
-            anotherSquad.receiveDamage(this.inflictingDamage);
+                // DECIDE WINNER
+                var won = this._decideWinner(this, targetSquad);
+                
+                if (won) {
+                    logger.info(`Squad attack: ${this.name} -> ${targetSquad.name} (successfully - inflicting ${this.inflictingDamage.toFixed(2)} damage)`);
 
-            // Recalculate attack success probability for damaged squad
-            anotherSquad.recalculateAttackSuccessProbability();
+                    // Deal damage to defeated squad
+                    targetSquad.receiveDamage(this.inflictingDamage);
 
-            // After successful attack increase experience of winning squad
-            this.units.forEach(function(unit){
-                unit.increaseExperience();
-            });
-        } else {
-            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (unsuccessfully)`);
-        }
-    
-        return won;
+                    // Recalculate attack success probability for damaged squad
+                    targetSquad.recalculateAttackSuccessProbability();
+
+                    // After successful attack increase experience of winning squad
+                    this.units.forEach(function(unit){
+                        unit.increaseExperience();
+                    });
+
+                    // If attacked squad is destroyed, battle list should be refreshed
+                    if (!targetSquad.alive) {
+                        battle.refreshList();
+                    }
+                } else {
+                    logger.info(`Squad attack: ${this.name} -> ${targetSquad.name} (unsuccessfully)`);
+                }
+                // Release the lock
+                done();
+            } 
+        }).catch(function(err){
+            console.err(err)
+        });
+    };
+
+    /**
+     * Method called by Battle to start attacking
+     * Method is "recursivelly" called after recharge is completed
+     * 
+     * @param {Battle} battle 
+     */
+    attack(battle) {
+        // ES6 handles easily "this reference" issue with setTimeout()
+        setTimeout(() => {
+            logger.debug(`Attack time for squad ${this.name}`)
+            this.performAttack(battle);
+            logger.debug(`Attack finished for squad ${this.name}`)
+            
+            // Attack can be performed only be non-destroyed squad
+            if (this.alive) {
+                this.attack(battle);
+            }
+        }, this.recharge);
     };
     
     /**

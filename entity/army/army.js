@@ -33,6 +33,7 @@ class Army {
      */
    addSquad(squad) {
         Utils.checkClass(squad, Squad, "Only Squad can be part of armies");
+        squad.army = this;
         this.squads.push(squad);
         logger.debug(`Squad has been assigned to Army ${this.name}: ${squad.name}`);
     };
