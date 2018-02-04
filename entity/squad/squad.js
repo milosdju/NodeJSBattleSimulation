@@ -237,6 +237,9 @@ class Squad {
             // Deal damage to defeated squad
             anotherSquad.receiveDamage(this.calculateInflictedDamage());
 
+            // Recalculate attack success probability for damaged squad
+            anotherSquad.recalculateAttackSuccessProbability();
+
             // After successful attack increase experience of winning squad
             this.units.forEach(function(unit){
                 unit.increaseExperience();

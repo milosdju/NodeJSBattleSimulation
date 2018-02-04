@@ -241,23 +241,17 @@ class Battle {
             // Perform ATTACK and deliver DAMAGE
             var won = attackingSquad.attack(targetSquad);
 
-            // Modify ATTACK PROBABILITY and ATTACK TIME
-            // for damaged squad
-            if (won) {
-                if (targetSquad.alive) {
-                    // If some units are lost in battle, attack success prob will be decreased
-                    targetSquad.recalculateAttackSuccessProbability();
-                } else {
-                    targetSquad.army.removeSquad(targetSquad);
+            if (won && !targetSquad.alive) {
+                // Remove squad from army if it's destroyed
+                targetSquad.army.removeSquad(targetSquad);
 
-                    // If all army squads are destroyed, remove army from battle
-                    if (targetSquad.army.squads.length === 0) {
-                        this.removeArmy(targetSquad.army);
-                    }
-
-                    // Remove destroyed squad from scheduled attack order
-                    this.removeSquadFromScheduledAttackOrder(targetSquad);
+                // If all army squads are destroyed, remove army from battle
+                if (targetSquad.army.squads.length === 0) {
+                    this.removeArmy(targetSquad.army);
                 }
+
+                // Remove destroyed squad from scheduled attack order
+                this.removeSquadFromScheduledAttackOrder(targetSquad);    
             } 
 
             /**
