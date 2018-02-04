@@ -106,7 +106,7 @@ class Battle {
          */
         var minArmies = this.battleConfig.get(BattleConfigProperty.MIN_ARMIES);
         if (this.armies.length < minArmies) {
-            throw Error("Number of armies per battle must be greater than or equal to " + minArmies);
+            throw Error(`Number of armies per battle must be greater than or equal to ${minArmies}`);
         }
 
         /**
@@ -257,7 +257,7 @@ class Battle {
             /**
              * Reorder attacking turn on every iteration
              */
-            this.attackOrderWithCashedValues[0].attackTime += attackingSquad.getSquadRechargeTime();
+            this.attackOrderWithCashedValues[0].attackTime += attackingSquad.recharge;
             this.attackOrderWithCashedValues.sort(this._sortAttackOrder);
         }
 

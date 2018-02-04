@@ -22,7 +22,7 @@ class Vehicle extends Unit {
         var minRecharge = this.defaultConfigs.get(BattleConfigProperty.MIN_VEHICLE_RECHARGE);
         var maxRecharge = this.defaultConfigs.get(BattleConfigProperty.MAX_VEHICLE_RECHARGE);
         if (!Utils.validateType(this.recharge, 'number') || this.recharge < minRecharge || this.recharge > maxRecharge) {
-            throw Error("Recharge for vehicle must be in range [1000..2000]");
+            throw Error(`Recharge for vehicle must be in range [${minRecharge}..${maxRecharge}]`);
         }
 
         // Initialize fields
@@ -140,7 +140,7 @@ class Vehicle extends Unit {
      * 
      * @returns Total vehicles attack success probability
      */
-    calculateAttackSuccessProbability() {
+    get attackSuccessProbability() {
         return 0.5 * (1 + this.health/100) * Unit.geometricAvgOfAttackSuccessProbabilities(this.operators);
     }
 
@@ -150,7 +150,7 @@ class Vehicle extends Unit {
      * 
      * @returns Inflicted damage by the vehicle
      */
-    calculateInflictedDamage() {
+    get inflictingDamage() {
         var experienceSum = 0;
         this.operators.forEach(function(operator){
             experienceSum += operator.experience;

@@ -54,7 +54,7 @@ class Unit {
         var minHealth = this.defaultConfigs.get(BattleConfigProperty.MIN_HEALTH);
         var maxHealth = this.defaultConfigs.get(BattleConfigProperty.MAX_HEALTH);
         if (!Utils.validateType(this.health, "number") || this.health < minHealth || this.health > maxHealth) {
-            throw Error("Health [" + this.health + "] must be in range [" + minHealth + ".." + maxHealth + "]")
+            throw Error(`Health [${this.health}] must be in range [${minHealth}".."${maxHealth}]`);
         }
     
         // Validate recharge type
@@ -74,7 +74,7 @@ class Unit {
         var totalAttackSuccessProbability = 1;
         units.forEach(function(unit){
             Utils.checkClass(unit, Unit, "Function accepts only units");
-            totalAttackSuccessProbability *= unit.calculateAttackSuccessProbability();
+            totalAttackSuccessProbability *= unit.attackSuccessProbability;
         });
          
         return Math.pow(totalAttackSuccessProbability, 1 / units.length);

@@ -30,7 +30,7 @@ class Soldier extends Unit {
      * Increase experience by 1
      */
     increaseExperience() {
-        if (this.experience < 50) {
+        if (this.experience < this.defaultConfigs.get(BattleConfigProperty.DEFAULT_EXPERIENCE)) {
             this.experience++;
         }
     }
@@ -39,7 +39,7 @@ class Soldier extends Unit {
      * Attack success probability is calculated with this formula:
      * F: 0.5 * (1 + health/100) * random(50 + experience, 100) / 100
      */
-    calculateAttackSuccessProbability() {
+    get attackSuccessProbability() {
         return 0.5 * (1 + this.health/100) * Utils.randomFromRange(50 + this.experience, 100) / 100;
     }
 
@@ -47,7 +47,7 @@ class Soldier extends Unit {
      * Inflicted damage is calculated with this formula:
      * F: 0.05 + experience / 100
      */
-    calculateInflictedDamage() {
+    get inflictingDamage() {
         return 0.05 + this.experience / 100;
     }
 
@@ -63,7 +63,7 @@ class Soldier extends Unit {
         var minRecharge = this.defaultConfigs.get(BattleConfigProperty.MIN_SOLDIER_RECHARGE);
         var maxRecharge = this.defaultConfigs.get(BattleConfigProperty.MAX_SOLDIER_RECHARGE);
         if (this.recharge < minRecharge || this.recharge > maxRecharge) {
-            throw Error("Recharge for soldier must be in range [" + minRecharge + ".." + maxRecharge + "]");
+            throw Error(`Recharge for soldier must be in range [${minRecharge}..${maxRecharge}]`);
         }
 
         // Validate experience type and value
@@ -71,7 +71,7 @@ class Soldier extends Unit {
         var maxExperience = this.defaultConfigs.get(BattleConfigProperty.MAX_EXPERIENCE);
         if (!Utils.validateType(this.experience, "number") 
             || this.experience < minExperience || this.experience > maxExperience) {
-            throw Error("Experience must be in range [" + minExperience + ".." + maxExperience + "]");
+            throw Error(`Experience must be in range [${minExperience}..${maxExperience}]`);
         }
     }
 

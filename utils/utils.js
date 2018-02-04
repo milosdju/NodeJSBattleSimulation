@@ -37,7 +37,7 @@ class Utils {
          * Set default error message
          */
         if (errorMessage == null) {
-            errorMessage = "Invalid input type: " + value + " should be " + clazz;
+            errorMessage = `Invalid input type: ${value} should be ${clazz}`;
         }
         if (!(value instanceof clazz)) {
             throw Error(errorMessage);
@@ -59,7 +59,7 @@ class Utils {
          * Set default error message
          */
         if (errorMessage == null) {
-            errorMessage = "Invalid input type: " + value + " should be of type " + typeStr;
+            errorMessage = `Invalid input type: ${value} should be of type ${typeStr}`;
         }
         if (!Utils.validateType(value, typeStr)) {
             throw Error(errorMessage);

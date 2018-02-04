@@ -64,7 +64,7 @@ class Army {
         // Check squad number constraint
         var minSquads = this.defaultConfigs.get(BattleConfigProperty.MIN_SQUADS);
         if (this.squads.length < minSquads) {
-            throw Error("Number of squads must be greater than or equal to " + minSquads);
+            throw Error(`Number of squads must be greater than or equal to ${minSquads}`);
         }
     };
 }

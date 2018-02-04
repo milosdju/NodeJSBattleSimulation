@@ -26,7 +26,6 @@ class Squad {
         this.name = name;
         this.strategy = strategy;
     
-        this.attackSuccessProbability = null;
         logger.debug(`Squad ${this.name} is built`);
     };
 
@@ -104,11 +103,11 @@ class Squad {
         // Check unit number constraint
         var minUnits = this.defaultConfigs.get(BattleConfigProperty.MIN_UNITS);
         if (this.units.length < minUnits) {
-            throw Error("Number of squads must be greater than or equal to " + minUnits);
+            throw Error(`Number of squads must be greater than or equal to ${minUnits}`);
         }
         var maxUnits = this.defaultConfigs.get(BattleConfigProperty.MAX_UNITS);
         if (this.units.length > maxUnits) {
-            throw Error("Number of squads must be smaller than or equal to " + maxUnits);
+            throw Error(`Number of squads must be smaller than or equal to ${maxUnits}`);
         }
     }
     
@@ -122,7 +121,7 @@ class Squad {
     /**
      * @returns recharge time for squad
      */
-    getSquadRechargeTime() {
+    get recharge() {
         var maxRechargeTime = this.units[0].recharge;
         this.units.forEach(function(unit){
             if (unit.recharge > maxRechargeTime) {
@@ -138,17 +137,17 @@ class Squad {
      * as geometric average of all suctinct ASP's
      */
     recalculateAttackSuccessProbability() {
-        this.attackSuccessProbability = Unit.geometricAvgOfAttackSuccessProbabilities(this.units);
+        this._attackSuccessProbability = Unit.geometricAvgOfAttackSuccessProbabilities(this.units);
     };
     
     /**
      * @returns cached attack success probability 
      */
-    getAttackSuccessProbability() {
-        if (!this.attackSuccessProbability) {
+    get attackSuccessProbability() {
+        if (!this._attackSuccessProbability) {
             this.recalculateAttackSuccessProbability();
         }
-        return this.attackSuccessProbability;
+        return this._attackSuccessProbability;
     }
     
     /**
@@ -157,10 +156,10 @@ class Squad {
      * 
      * TODO: rename to inflicting
      */
-    calculateInflictedDamage() {
+    get inflictingDamage() {
         var totalInflictedDamage = 0;
         this.units.forEach(function(unit){
-            totalInflictedDamage += unit.calculateInflictedDamage();
+            totalInflictedDamage += unit.inflictingDamage;
         });
     
         return totalInflictedDamage;
@@ -205,8 +204,8 @@ class Squad {
         Utils.checkClass(firstSquad, Squad, "Battle can occur only between Squads");
         Utils.checkClass(secondSquad, Squad, "Battle can occur only between Squads");
     
-        var firstSquadChanceToWin = firstSquad.getAttackSuccessProbability();
-        var secondSquadChanceToWin = secondSquad.getAttackSuccessProbability();
+        var firstSquadChanceToWin = firstSquad.attackSuccessProbability;
+        var secondSquadChanceToWin = secondSquad.attackSuccessProbability;
     
         var won = firstSquadChanceToWin > secondSquadChanceToWin;
         
@@ -232,10 +231,10 @@ class Squad {
         var won = this._decideWinner(this, anotherSquad);
     
         if (won) {
-            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (successfully - inflicting ${this.calculateInflictedDamage()} damage)`);
+            logger.info(`Squad attack: ${this.name} -> ${anotherSquad.name} (successfully - inflicting ${this.inflictingDamage} damage)`);
 
             // Deal damage to defeated squad
-            anotherSquad.receiveDamage(this.calculateInflictedDamage());
+            anotherSquad.receiveDamage(this.inflictingDamage);
 
             // Recalculate attack success probability for damaged squad
             anotherSquad.recalculateAttackSuccessProbability();
@@ -262,9 +261,9 @@ class Squad {
     
         enemies.forEach(function(potentialTarget){
             // Choose strongest
-            if (potentialTarget.getAttackSuccessProbability() > strongestAttackProbability) {
+            if (potentialTarget.attackSuccessProbability > strongestAttackProbability) {
                 strongest = potentialTarget;
-                strongestAttackProbability = potentialTarget.getAttackSuccessProbability();
+                strongestAttackProbability = potentialTarget.attackSuccessProbability;
             } 
         });
     
@@ -282,9 +281,9 @@ class Squad {
     
         enemies.forEach(function(potentialTarget){
             // Choose weakest
-            if (potentialTarget.getAttackSuccessProbability() < weakestAttackProbability) {
+            if (potentialTarget.attackSuccessProbability < weakestAttackProbability) {
                 weakest = potentialTarget;
-                weakestAttackProbability = potentialTarget.getAttackSuccessProbability();
+                weakestAttackProbability = potentialTarget.attackSuccessProbability;
             }
         });
     
